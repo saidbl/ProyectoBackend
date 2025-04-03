@@ -1,0 +1,50 @@
+package mx.com.gm.service;
+
+import java.util.List;
+import mx.com.gm.dao.EquipoDao;
+import mx.com.gm.dao.EventoDao;
+import mx.com.gm.dao.EventoEquipoDao;
+import mx.com.gm.domain.Equipo;
+import mx.com.gm.domain.Evento;
+import mx.com.gm.domain.EventoEquipo;
+import mx.com.gm.dto.EventoEquipoDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class EventoEquipoServiceImpl implements EventoEquipoService{
+
+    @Autowired
+    EventoEquipoDao eedao;
+    
+    @Autowired
+    EventoDao ddao;
+    
+    @Autowired
+    EquipoDao edao;
+    
+    @Override
+    public List<EventoEquipo> listByIdEvento(Long id) {
+         return eedao.findByEventoId(id);
+    }
+
+    @Override
+    public EventoEquipo add(EventoEquipoDTO ee) {
+        Evento d = ddao.findById(ee.getIdEvento())
+                .orElseThrow(() -> new RuntimeException("Deportista no encontrado"));
+
+        Equipo e = edao.findById(ee.getIdEquipo())
+                .orElseThrow(() -> new RuntimeException("Rutina no encontrada"));
+        
+    Long equiposAsociados = d.getEquiposInscritos();
+    equiposAsociados ++;
+    d.setEquiposInscritos(equiposAsociados);
+    ddao.save(d);
+    EventoEquipo eventoEquipo = new EventoEquipo();
+    eventoEquipo.setEvento(d);
+    eventoEquipo.setEquipo(e);
+
+    return eedao.save(eventoEquipo);
+    }
+    
+}
