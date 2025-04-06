@@ -29,7 +29,10 @@ public class RecursoRutinaService {
         this.ejercicioRepository = ejercicioRepository;
         this.fileStorageService = fileStorageService;
     }
-
+    
+    public List<RecursoRutina> listByInstructor(Long idInstructor) {
+        return recursoRepository.findByInstructorId(idInstructor);
+    }
     public RecursoRutina crearRecurso(Long ejercicioId, TipoRecurso tipo, String url, String descripcion) {
         EjercicioRutina ejercicio = ejercicioRepository.findById(ejercicioId)
             .orElseThrow(() -> new EntityNotFoundException("Ejercicio no encontrado con ID: " + ejercicioId));
@@ -62,22 +65,12 @@ public class RecursoRutinaService {
     public List<RecursoRutina> obtenerRecursosPorTipo(Long ejercicioId, TipoRecurso tipo) {
         return recursoRepository.findByEjercicioRutinaIdAndTipo(ejercicioId, tipo);
     }
-
-    /**
-     * Elimina un recurso (tanto el registro como el archivo físico)
-     * @param recursoId
-     * @throws java.io.IOException
-     */
     public void eliminarRecurso(Long recursoId) throws IOException {
         RecursoRutina recurso = recursoRepository.findById(recursoId)
             .orElseThrow(() -> new EntityNotFoundException("Recurso no encontrado con ID: " + recursoId));
-        
-        // Eliminar archivo físico
         if (recurso.getTipo() != TipoRecurso.URL_EXTERNA) {
             fileStorageService.eliminarArchivo(recurso.getUrl());
         }
-        
-        // Eliminar registro de BD
         recursoRepository.delete(recurso);
     }
     public RecursoRutina actualizarDescripcion(Long recursoId, String nuevaDescripcion) {

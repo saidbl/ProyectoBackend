@@ -50,6 +50,11 @@ public class RecursoController {
         
         return ResponseEntity.ok(recursos);
     }
-
+    
+    @GetMapping("/ejercicio/videos/{instructorId}")
+    public ResponseEntity<List<RecursoRutina>> listarVideos(@PathVariable Long instructorId) {
+        List<RecursoRutina> recursos = recursoService.listByInstructor(instructorId);
+        return ResponseEntity.ok(recursos);
+    }
 }
 

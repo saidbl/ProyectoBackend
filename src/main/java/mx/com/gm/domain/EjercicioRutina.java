@@ -1,9 +1,8 @@
 package mx.com.gm.domain;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.io.Serializable;
-import java.util.List;
 
 import lombok.Data;
 
@@ -18,6 +17,7 @@ public class EjercicioRutina implements Serializable{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_rutina", nullable = false)
+    @JsonBackReference 
     private Rutina rutina;
 
     @Column(nullable = false, length = 100)
@@ -37,9 +37,5 @@ public class EjercicioRutina implements Serializable{
 
     @Column(nullable = false)
     private Integer orden;
-    
-    @OneToMany(mappedBy = "ejercicioRutina")
-    @JsonManagedReference
-    private List<RecursoRutina> recursos;
 
 }
