@@ -1,7 +1,7 @@
-
 package mx.com.gm.service;
 
 import java.util.List;
+
 import mx.com.gm.dao.InstructorDao;
 import mx.com.gm.dao.PosicionDao;
 import mx.com.gm.dao.RutinaDao;
@@ -61,6 +61,5 @@ public class RutinaServiceImpl implements RutinaService{
     @Override
     public List<Rutina> getTop3RutinasPopularesPorInstructor(Long instructorId) {
         return rdao.findTop3RutinasForInstructor(instructorId);
-    }
-    
+    }    
 }

@@ -1,9 +1,7 @@
 package mx.com.gm.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.io.Serializable;
-import java.util.Set;
 import lombok.Data;
 
 @Entity

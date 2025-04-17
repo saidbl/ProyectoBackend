@@ -5,7 +5,9 @@ import java.util.List;
 import mx.com.gm.domain.Evento;
 import mx.com.gm.service.EventoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,5 +22,8 @@ public class EventoController {
         System.out.println(id);
         return eservice.listByIdDeporte(id);
     }
-    
+    @GetMapping("/eventosFuturosDep/{id}")
+    public ResponseEntity<List<Evento>> listEventosByDeportista(@PathVariable Long id){
+        return ResponseEntity.ok( eservice.ProximosEventosByDeportistaId(id));
+    }
 }

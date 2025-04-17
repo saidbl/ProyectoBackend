@@ -3,11 +3,13 @@ package mx.com.gm.web;
 
 import java.util.List;
 import mx.com.gm.domain.Deportista;
+import mx.com.gm.domain.Rutina;
 import mx.com.gm.dto.ResponseAPI;
 import mx.com.gm.service.DeportistaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class DeportistaController {
     @Autowired
     DeportistaService dservice;
+    
      @GetMapping("/deportista")
     public List<Deportista> list(){
         return dservice.list();
@@ -30,4 +33,11 @@ public class DeportistaController {
         System.out.println(id);
         return dservice.listByIdInstructor(id);
     }
+    
+    @GetMapping("/deportista/{id}")
+    public ResponseEntity<List<Rutina>> listRutinas(@PathVariable Long id){
+        return ResponseEntity.ok( dservice.listByDepostistaAndDia(id));
+    }
+    
+    
 }

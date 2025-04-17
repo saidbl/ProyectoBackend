@@ -1,5 +1,6 @@
 package mx.com.gm.dto;
 
+import java.util.List;
 import lombok.Data;
 
 @Data
@@ -19,4 +20,6 @@ public class EjercicioRutinaDTO {
     private String descanso; 
 
     private Integer orden;
+    
+    private List<RecursoDTO> recursos;
 }

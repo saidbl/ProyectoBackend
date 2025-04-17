@@ -17,5 +17,10 @@ public class EventoServiceImpl implements EventoService{
     public List<Evento> listByIdDeporte(Long id) {
         return edao.findByDeporteId(id);
     }
+
+    @Override
+    public List<Evento> ProximosEventosByDeportistaId(Long deportista) {
+        return edao.findProximosEventosByDeportistaId(deportista);
+    }
     
 }

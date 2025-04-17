@@ -1,6 +1,7 @@
 
 package mx.com.gm.dto;
 
+import java.util.List;
 import lombok.Data;
 
 @Data
@@ -13,4 +14,5 @@ public class RutinaDTO {
     private String nivel_dificultad;
     private String objetivo;
     private Long duracion_esperada;
+    private List<EjercicioRutinaDTO> ejercicios;
 }

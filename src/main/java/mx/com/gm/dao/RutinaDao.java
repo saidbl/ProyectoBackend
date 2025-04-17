@@ -37,4 +37,12 @@ public interface RutinaDao extends JpaRepository<Rutina,Long>{
         LIMIT 3
         """, nativeQuery = true)
     List<Rutina> findTop3RutinasForInstructor(@Param("instructorId") Long instructorId);
+    
+     @Query("SELECT DISTINCT r FROM Rutina r " +
+           "JOIN FETCH r.ejercicios e " +
+           "LEFT JOIN FETCH e.recursos re " +
+           "JOIN r.deportistas d " +
+           "WHERE d.id = :deportistaId " +
+           "ORDER BY r.dia, e.orden")
+    List<Rutina> findRutinasCompletasByDeportistaId(@Param("deportistaId") Long deportistaId);
 }

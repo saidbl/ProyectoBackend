@@ -6,4 +6,5 @@ import mx.com.gm.domain.Evento;
 
 public interface EventoService {
     public List<Evento> listByIdDeporte(Long id);
+    public List<Evento> ProximosEventosByDeportistaId(Long deportista);
 }

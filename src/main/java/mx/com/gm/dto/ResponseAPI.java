@@ -31,6 +31,9 @@ public class ResponseAPI {
     private List<Organizacion> orgs;
     private Long idDeporte;
     private boolean success;
+    private String nombre;
+    private String apellido;
+    private String posicion;
 
    
 }
