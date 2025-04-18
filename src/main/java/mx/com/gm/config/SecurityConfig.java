@@ -51,6 +51,7 @@ public class SecurityConfig {
                         .requestMatchers("/ejercicios/**").hasAnyAuthority("instructor")
                         .requestMatchers("/video/**").permitAll()
                         .requestMatchers("/eventosFuturosDep/**").hasAnyAuthority("deportista")
+                        .requestMatchers("rutinasdeportista/**").hasAnyAuthority("deportista")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
