@@ -78,6 +78,7 @@ public class RutinaServiceImpl implements RutinaService{
             Long rutinaId = ((Number)fila[0]).longValue();
             RutinaDTO rutinaDTO = rutinasMap.computeIfAbsent(rutinaId, id -> {
                 RutinaDTO r = new RutinaDTO();
+                r.setId(rutinaId);
                 r.setNombre((String)fila[1]);
                 r.setDia((String)fila[2]);
                 r.setDescripcion((String)fila[3]);
