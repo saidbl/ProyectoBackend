@@ -51,11 +51,12 @@ public class SecurityConfig {
                         .requestMatchers("/ejercicios/**").hasAnyAuthority("instructor")
                         .requestMatchers("/video/**").permitAll()
                         .requestMatchers("/eventosFuturosDep/**").hasAnyAuthority("deportista")
-                        .requestMatchers("rutinasdeportista/**").hasAnyAuthority("deportista")
+                        .requestMatchers("/rutinasdeportista/**").hasAnyAuthority("deportista")
+                        .requestMatchers("/checkin/**").hasAnyAuthority("deportista")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(customAuthenticationProvider)  // ✅ Se inyecta como parámetro
+                .authenticationProvider(customAuthenticationProvider) 
                 .addFilterBefore(jwtOrganizacion, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtDeportista, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtInstructor, UsernamePasswordAuthenticationFilter.class);
