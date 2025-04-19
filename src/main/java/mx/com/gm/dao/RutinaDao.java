@@ -53,4 +53,19 @@ public interface RutinaDao extends JpaRepository<Rutina,Long>{
         "ORDER BY r.dia, e.orden", 
         nativeQuery = true)
     List<Object[]> findRutinasCompletasByDeportistaIdNative(@Param("deportistaId") Long deportistaId);
+    
+    @Query(value = 
+        "SELECT r.id AS rutina_id, r.nombre AS rutina_nombre, r.dia, r.descripcion AS rutina_desc, " +
+        "r.nivel_dificultad, r.objetivo, r.duracion_esperada, " +
+        "e.id AS ejercicio_id, e.nombre AS ejercicio_nombre, e.descripcion AS ejercicio_desc, " +
+        "e.series, e.repeticiones, e.descanso, e.orden, " +
+        "re.id AS recurso_id, re.tipo AS recurso_tipo, re.url AS recurso_url, re.descripcion AS recurso_desc " +
+        "FROM rutina r " +
+        "JOIN rutina_jugador rj ON r.id = rj.id_rutina " +
+        "LEFT JOIN ejercicio_rutina e ON r.id = e.id_rutina " +
+        "LEFT JOIN recurso_rutina re ON e.id = re.id_ejercicio_rutina " +
+        "WHERE rj.id_jugador = :deportistaId AND r.dia = :diaSemana " +
+        "ORDER BY r.dia, e.orden", 
+        nativeQuery = true)
+    List<Object[]> findRutinasCompletasByDeportistaIdAndDia(@Param("deportistaId") Long deportistaId, @Param("diaSemana") String diaSemana);
 }

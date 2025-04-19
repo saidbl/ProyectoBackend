@@ -11,6 +11,5 @@ public interface DeportistaService {
     public List<Deportista> list();
     public ResponseAPI login(ResponseAPI login);
     public List<Deportista> listByIdInstructor(Long id);
-    public List<Rutina> listByDepostistaAndDia(Long idDeportista);
     
 }

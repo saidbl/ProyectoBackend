@@ -57,4 +57,8 @@ public class RutinaController {
         List<RutinaDTO> rutinas = rservice.rutinasEjerciciosRecursos(deportistaId);
         return ResponseEntity.ok(rutinas);
     }
+    @GetMapping("/deportista/{id}")
+    public ResponseEntity<List<RutinaDTO>> listRutinas(@PathVariable Long id){
+        return ResponseEntity.ok( rservice.rutinasByDiaAndDia(id));
+    }
 }

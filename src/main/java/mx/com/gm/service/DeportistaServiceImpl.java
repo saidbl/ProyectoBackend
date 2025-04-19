@@ -1,10 +1,7 @@
-
 package mx.com.gm.service;
-
 import java.util.*;
 import mx.com.gm.dao.DeportistaDao;
 import mx.com.gm.domain.Deportista;
-import mx.com.gm.domain.Rutina;
 import mx.com.gm.dto.ResponseAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -62,26 +59,6 @@ public class DeportistaServiceImpl implements DeportistaService{
     @Override
     public List<Deportista> listByIdInstructor(Long id) {
         return ddao.findByInstructorId(id);
-    }
-
-    @Override
-    public List<Rutina> listByDepostistaAndDia(Long idDeportista) {
-        String diaSemana = obtenerDiaSemanaActual();
-        return ddao.findRutinasByDeportistaAndDiaSemana(idDeportista, diaSemana);
-    }
-    private String obtenerDiaSemanaActual() {
-        Map<Integer, String> diasSemana = Map.of(
-            1, "Lunes",
-            2, "Martes",
-            3, "Miércoles",
-            4, "Jueves",
-            5, "Viernes",
-            6, "Sábado",
-            7, "Domingo"
-        );
-        Calendar calendar = Calendar.getInstance();
-        int dia = calendar.get(Calendar.DAY_OF_WEEK);
-        return diasSemana.get(dia == 1 ? 7 : dia - 1);
     }
     
 }
