@@ -53,6 +53,8 @@ public class SecurityConfig {
                         .requestMatchers("/eventosFuturosDep/**").hasAnyAuthority("deportista")
                         .requestMatchers("/rutinasdeportista/**").hasAnyAuthority("deportista")
                         .requestMatchers("/checkin/**").hasAnyAuthority("deportista")
+                        .requestMatchers("/equiposDeportista/**").hasAnyAuthority("deportista")
+                        .requestMatchers("organizacion/crear").hasAnyAuthority("organizacion")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

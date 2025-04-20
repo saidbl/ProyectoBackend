@@ -8,4 +8,5 @@ public interface EquipoService {
     public List<Equipo> listByIdInstructor(Long id);
     void delete(Long id);
     public Equipo add(EquipoDTO e);
+    public List<Equipo> listbyidjugador(Long id);
 }

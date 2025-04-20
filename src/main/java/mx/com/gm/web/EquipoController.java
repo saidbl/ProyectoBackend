@@ -38,4 +38,8 @@ public class EquipoController {
         Equipo nuevoEquipo = eservice.add(equipo);
         return ResponseEntity.ok(nuevoEquipo);
     }
+    @GetMapping("/equiposDeportista/{id}")
+    public List<Equipo> listByDeportistaId (@PathVariable Long id){
+        return eservice.listbyidjugador(id);
+    }
 }

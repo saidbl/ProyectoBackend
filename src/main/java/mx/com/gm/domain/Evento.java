@@ -30,6 +30,9 @@ public class Evento implements Serializable{
 
     @Column(name = "fecha", nullable = false)
     private LocalDate fecha;
+    
+    @Column(name = "fecha_fin", nullable = false)
+    private LocalDate fechaFin;
 
     @Column(name = "descripcion", columnDefinition = "TEXT")
     private String descripcion;
@@ -45,6 +48,17 @@ public class Evento implements Serializable{
 
     @Column(name = "estado", length = 20)
     private String estado;
+    
+    @Column(name = "recurrente")
+    private Boolean recurrente;
+    
+    private String frecuencia;
+    
+    @Column(name = "dias_semana")
+    private String diasSemana;
+    
+    @Column(name = "excluir_fines")
+    private Boolean excluirFines;
 
     @Column(name = "contacto_organizador", length = 255)
     private String contactoOrganizador;

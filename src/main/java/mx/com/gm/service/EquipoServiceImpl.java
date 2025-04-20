@@ -52,5 +52,10 @@ public class EquipoServiceImpl implements EquipoService{
         equipo.setJugadoresAsociados(e.getJugadoresAsociados());
         return edao.save(equipo);
     }
+
+    @Override
+    public List<Equipo> listbyidjugador(Long id) {
+        return edao.findEquiposActivosByJugadorIdNative(id);
+    }
     
 }
