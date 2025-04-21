@@ -32,6 +32,7 @@ public class EventoController {
     
     @PostMapping("/organizacion/crear")
     public ResponseEntity<Evento> crearEvento(@RequestBody EventoDTO eventoDTO) {
+        System.out.println(eventoDTO);
         Evento evento = eservice.crearEventoconFechas(eventoDTO);
         return ResponseEntity.ok(evento);
     }

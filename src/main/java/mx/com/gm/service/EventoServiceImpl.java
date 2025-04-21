@@ -1,5 +1,6 @@
 package mx.com.gm.service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -68,24 +69,31 @@ public class EventoServiceImpl implements EventoService{
         evento.setOrganizacion(o);
         evento.setRecurrente(edto.getRecurrente());
         evento.setUbicacion(edto.getUbicacion());
+        Evento e =  edao.save(evento);
         if (edto.getRecurrente()) {
+            System.out.println("Entro al if");
             generarFechasRecurrentes(evento, edto);
         } else {
+            System.out.println("Entro al else");
             generarFechaUnica(evento, edto);
         }
-        
-        return edao.save(evento);
+        System.out.println("No entro");
+        return e;
     }
     private void generarFechaUnica(Evento evento, EventoDTO eventoDTO) {
+        System.out.println("Dentro de funcion");
         EventoFecha eventoFecha = new EventoFecha();
         eventoFecha.setFecha(eventoDTO.getFecha());
         eventoFecha.setHoraInicio(eventoDTO.getHoraInicio());
         eventoFecha.setHoraFin(eventoDTO.getHoraFin());
         eventoFecha.setEvento(evento);
         eventoFecha.setEstado("ACTIVO");
+        System.out.println(eventoFecha);
         efdao.save(eventoFecha);
     }
       private void generarFechasRecurrentes(Evento evento, EventoDTO eventoDTO) {
+        System.out.println("Dentro de funcion");
+          System.out.println(eventoDTO.getDiasSemana());
         List<LocalDate> fechas = calcularFechasRecurrentes(
             eventoDTO.getFecha(),
             eventoDTO.getFechaFin(),
@@ -93,7 +101,8 @@ public class EventoServiceImpl implements EventoService{
             eventoDTO.getDiasSemana(),
             eventoDTO.getExcluirFines()
         );
-
+        System.out.println("Antes de Funcion");
+          System.out.println(fechas);
         for (LocalDate fecha : fechas) {
             EventoFecha eventoFecha = new EventoFecha();
             eventoFecha.setFecha(fecha);
@@ -101,6 +110,8 @@ public class EventoServiceImpl implements EventoService{
             eventoFecha.setHoraFin(eventoDTO.getHoraFin());
             eventoFecha.setEvento(evento);
             eventoFecha.setEstado("ACTIVO");
+            System.out.println(eventoFecha.getId());
+            System.out.println(eventoFecha);
             efdao.save(eventoFecha);
         }
     }
@@ -108,60 +119,71 @@ public class EventoServiceImpl implements EventoService{
      private List<LocalDate> calcularFechasRecurrentes(LocalDate inicio, LocalDate fin, String frecuencia, 
                                                List<String> diasSemana, boolean excluirFines) {
         List<LocalDate> fechas = new ArrayList<>();
-        Calendar calendar = Calendar.getInstance();
-        Date date = Date.from(inicio.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        calendar.setTime(date);
-        if (!cumpleFrecuencia(calendar, frecuencia, diasSemana, excluirFines)) {
-            avanzarCalendario(calendar, frecuencia);
+    
+    // Si es semanal y no hay días especificados, usar el día de la fecha inicial
+    if (frecuencia.equals("SEMANAL") && (diasSemana == null || diasSemana.isEmpty())) {
+        String diaInicial = convertirDiaLocalDateATexto(inicio.getDayOfWeek());
+        diasSemana = List.of(diaInicial);
+    }
+    
+    LocalDate fechaActual = inicio;
+    while (!fechaActual.isAfter(fin)) {
+        if (cumpleCondiciones(fechaActual, frecuencia, diasSemana, excluirFines)) {
+            fechas.add(fechaActual);
         }
-
-        Date datefin = Date.from(fin.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        while (!calendar.getTime().after(datefin)) {
-            if (cumpleFrecuencia(calendar, frecuencia, diasSemana, excluirFines)) {
-                Date fecha = calendar.getTime();
-                fechas.add( fecha.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-            }
-            avanzarCalendario(calendar, frecuencia);
+        
+        // Avance diferente para frecuencia semanal
+        if (frecuencia.equals("SEMANAL")) {
+            // Avanzamos día por día para encontrar todos los días especificados
+            fechaActual = fechaActual.plusDays(1);
+        } else {
+            // Para otras frecuencias
+            fechaActual = avanzarFechaSegunFrecuencia(fechaActual, frecuencia);
         }
-        return fechas;
+    }
+    
+    return fechas;
     }
      
-     private void avanzarCalendario(Calendar calendar, String frecuencia) {
-        switch (frecuencia) {
-            case "DIARIO" -> calendar.add(Calendar.DAY_OF_MONTH, 1);
-            case "SEMANAL" -> calendar.add(Calendar.WEEK_OF_YEAR, 1);
-            case "MENSUAL" -> calendar.add(Calendar.MONTH, 1);
-            case "ANUAL" -> calendar.add(Calendar.YEAR, 1);
-            default -> calendar.add(Calendar.DAY_OF_MONTH, 1);
-        }
-    }
-     private boolean cumpleFrecuencia(Calendar calendar, String frecuencia, 
-                                   List<String> diasSemana, boolean excluirFines) {
-        if (excluirFines) {
-            int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-            if (dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY) {
-                return false;
-            }
-        }
-        if (frecuencia.equals("SEMANAL") && diasSemana != null && !diasSemana.isEmpty()) {
-            int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-            String diaActual = convertirDiaCalendarioATexto(dayOfWeek);
-            return diasSemana.contains(diaActual);
-        }
-        return true;
-    }
+     private LocalDate avanzarFechaSegunFrecuencia(LocalDate fecha, String frecuencia) {
+    return switch (frecuencia) {
+        case "DIARIO" -> fecha.plusDays(1);
+        case "MENSUAL" -> fecha.plusMonths(1);
+        case "ANUAL" -> fecha.plusYears(1);
+        default -> fecha.plusDays(1);
+    };
+}
      
-     private String convertirDiaCalendarioATexto(int dayOfWeek) {
-        return switch (dayOfWeek) {
-            case Calendar.MONDAY -> "L";
-            case Calendar.TUESDAY -> "M";
-            case Calendar.WEDNESDAY -> "X";
-            case Calendar.THURSDAY -> "J";
-            case Calendar.FRIDAY -> "V";
-            case Calendar.SATURDAY -> "S";
-            case Calendar.SUNDAY -> "D";
-            default -> "";
-        };
+    private boolean cumpleCondiciones(LocalDate fecha, String frecuencia, 
+     List<String> diasSemana, boolean excluirFines) {
+    
+    // 1. Verificar exclusión de fines de semana
+    if (excluirFines) {
+        DayOfWeek dayOfWeek = fecha.getDayOfWeek();
+        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
+            return false;
+        }
     }
+    
+    // 2. Verificar días específicos para frecuencia semanal
+    if (frecuencia.equals("SEMANAL")) {
+        String diaActual = convertirDiaLocalDateATexto(fecha.getDayOfWeek());
+        return diasSemana.contains(diaActual);
+    }
+    
+    // 3. Para otras frecuencias
+    return true;
+}
+     private String convertirDiaLocalDateATexto(DayOfWeek dayOfWeek) {
+    return switch (dayOfWeek) {
+        case MONDAY -> "L";
+        case TUESDAY -> "M"; // Martes
+        case WEDNESDAY -> "X";
+        case THURSDAY -> "J";
+        case FRIDAY -> "V"; // Viernes
+        case SATURDAY -> "S";
+        case SUNDAY -> "D";
+    };
+}
     
 }
