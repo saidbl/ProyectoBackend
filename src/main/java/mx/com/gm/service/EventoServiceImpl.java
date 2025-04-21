@@ -1,12 +1,12 @@
 package mx.com.gm.service;
 
+import jakarta.transaction.Transactional;
+import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import mx.com.gm.dao.DeporteDao;
 import mx.com.gm.dao.EventoDao;
 import mx.com.gm.dao.EventoFechaDao;
@@ -16,10 +16,13 @@ import mx.com.gm.domain.Evento;
 import mx.com.gm.domain.EventoFecha;
 import mx.com.gm.domain.Organizacion;
 import mx.com.gm.dto.EventoDTO;
+import mx.com.gm.dto.TipoRecurso;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
+@Transactional
 public class EventoServiceImpl implements EventoService{
     
     @Autowired
@@ -34,6 +37,9 @@ public class EventoServiceImpl implements EventoService{
     @Autowired 
     EventoFechaDao efdao;
     
+    @Autowired 
+    FileStorageService fsservice;
+    
 
     @Override
     public List<Evento> listByIdDeporte(Long id) {
@@ -46,7 +52,17 @@ public class EventoServiceImpl implements EventoService{
     }
 
     @Override
-    public Evento crearEventoconFechas(EventoDTO edto) {
+    public Evento crearEventoconFechas(EventoDTO edto, MultipartFile archivo)  throws IOException {
+        TipoRecurso tipo = TipoRecurso.fromContentType(archivo.getContentType());
+        if (tipo == null) {
+            throw new IllegalArgumentException("Tipo de archivo no soportado: " + archivo.getContentType());
+        }
+        String nombreArchivo = UUID.randomUUID() + "_" + archivo.getOriginalFilename();
+        String rutaArchivo = fsservice.guardarArchivo(
+            archivo.getInputStream(), 
+            tipo.getNombreCarpeta(), 
+            nombreArchivo
+        );
        Evento evento = new Evento();
        Deporte d = ddao.findById(edto.getIdDeporte())
                .orElseThrow(() -> new RuntimeException("Rutina no encontrada"));
@@ -69,6 +85,7 @@ public class EventoServiceImpl implements EventoService{
         evento.setOrganizacion(o);
         evento.setRecurrente(edto.getRecurrente());
         evento.setUbicacion(edto.getUbicacion());
+        evento.setImagen(rutaArchivo);
         Evento e =  edao.save(evento);
         if (edto.getRecurrente()) {
             System.out.println("Entro al if");
@@ -115,36 +132,27 @@ public class EventoServiceImpl implements EventoService{
             efdao.save(eventoFecha);
         }
     }
-    
      private List<LocalDate> calcularFechasRecurrentes(LocalDate inicio, LocalDate fin, String frecuencia, 
                                                List<String> diasSemana, boolean excluirFines) {
         List<LocalDate> fechas = new ArrayList<>();
-    
-    // Si es semanal y no hay días especificados, usar el día de la fecha inicial
     if (frecuencia.equals("SEMANAL") && (diasSemana == null || diasSemana.isEmpty())) {
         String diaInicial = convertirDiaLocalDateATexto(inicio.getDayOfWeek());
         diasSemana = List.of(diaInicial);
     }
-    
     LocalDate fechaActual = inicio;
     while (!fechaActual.isAfter(fin)) {
         if (cumpleCondiciones(fechaActual, frecuencia, diasSemana, excluirFines)) {
             fechas.add(fechaActual);
         }
-        
-        // Avance diferente para frecuencia semanal
         if (frecuencia.equals("SEMANAL")) {
-            // Avanzamos día por día para encontrar todos los días especificados
             fechaActual = fechaActual.plusDays(1);
         } else {
-            // Para otras frecuencias
             fechaActual = avanzarFechaSegunFrecuencia(fechaActual, frecuencia);
         }
     }
     
     return fechas;
     }
-     
      private LocalDate avanzarFechaSegunFrecuencia(LocalDate fecha, String frecuencia) {
     return switch (frecuencia) {
         case "DIARIO" -> fecha.plusDays(1);
@@ -152,26 +160,19 @@ public class EventoServiceImpl implements EventoService{
         case "ANUAL" -> fecha.plusYears(1);
         default -> fecha.plusDays(1);
     };
-}
-     
+}  
     private boolean cumpleCondiciones(LocalDate fecha, String frecuencia, 
      List<String> diasSemana, boolean excluirFines) {
-    
-    // 1. Verificar exclusión de fines de semana
     if (excluirFines) {
         DayOfWeek dayOfWeek = fecha.getDayOfWeek();
         if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
             return false;
         }
     }
-    
-    // 2. Verificar días específicos para frecuencia semanal
     if (frecuencia.equals("SEMANAL")) {
         String diaActual = convertirDiaLocalDateATexto(fecha.getDayOfWeek());
         return diasSemana.contains(diaActual);
     }
-    
-    // 3. Para otras frecuencias
     return true;
 }
      private String convertirDiaLocalDateATexto(DayOfWeek dayOfWeek) {
@@ -185,5 +186,5 @@ public class EventoServiceImpl implements EventoService{
         case SUNDAY -> "D";
     };
 }
-    
+
 }

@@ -55,6 +55,8 @@ public class SecurityConfig {
                         .requestMatchers("/checkin/**").hasAnyAuthority("deportista")
                         .requestMatchers("/equiposDeportista/**").hasAnyAuthority("deportista")
                         .requestMatchers("organizacion/crear").hasAnyAuthority("organizacion")
+                        .requestMatchers("/image/**").permitAll()
+                        .requestMatchers("/eventosDeportista").hasAnyAuthority("deportista")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

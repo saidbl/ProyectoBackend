@@ -19,5 +19,7 @@ public class WebConfig implements WebMvcConfigurer{
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/video/**")
                 .addResourceLocations("file:///C:/Users/vbcs1/Documents/SpringProyect/uploads/video/");
+        registry.addResourceHandler("/image/**")
+                .addResourceLocations("file:///C:/Users/vbcs1/Documents/SpringProyect/uploads/image/");
     }
 }

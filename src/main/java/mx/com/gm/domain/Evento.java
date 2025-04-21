@@ -65,4 +65,6 @@ public class Evento implements Serializable{
     
     @Column(name = "equipos_inscritos")
     private Long equiposInscritos;
+    
+    private String imagen;
 }
