@@ -187,4 +187,35 @@ public class EventoServiceImpl implements EventoService{
     };
 }
 
+    @Override
+    public List<Evento> ProximosEventosByOrganizacionId(Long org) {
+         return edao.findEventosFuturosByOrganizacion(org);
+    }
+
+    @Override
+    public void eliminarEvento(Long id) {
+        edao.deleteById(id);
+    }
+
+    @Transactional
+    @Override
+    public Evento actualizarEvento(Long id, EventoDTO eventoActualizado) {
+         Evento eventoExistente = edao.findById(id)
+            .orElseThrow(() -> new RuntimeException("Deporte no encontrada"));
+        eventoExistente.setNombre(eventoActualizado.getNombre());
+        eventoExistente.setFecha(eventoActualizado.getFecha());
+        eventoExistente.setFechaFin(eventoActualizado.getFechaFin());
+        eventoExistente.setUbicacion(eventoActualizado.getUbicacion());
+        eventoExistente.setHoraInicio(eventoActualizado.getHoraInicio());
+        eventoExistente.setHoraFin(eventoActualizado.getHoraFin());
+        eventoExistente.setDescripcion(eventoActualizado.getDescripcion());
+        eventoExistente.setNumMaxEquipos(eventoActualizado.getNumMaxEquipos());
+        eventoExistente.setEstado(eventoActualizado.getEstado());
+        eventoExistente.setRecurrente(eventoActualizado.getRecurrente());
+        eventoExistente.setFrecuencia(eventoActualizado.getFrecuencia());
+        eventoExistente.setDiasSemana(eventoActualizado.getDiasSemana().toString());
+        eventoExistente.setExcluirFines(eventoActualizado.getExcluirFines());
+        return edao.save(eventoExistente);
+    }
+
 }

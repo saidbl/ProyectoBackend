@@ -4,15 +4,18 @@ import java.io.IOException;
 import java.util.List;
 import mx.com.gm.domain.Evento;
 import mx.com.gm.dto.EventoDTO;
-import mx.com.gm.dto.EventoDeportistaDTO;
+import mx.com.gm.dto.ResponseAPI;
 import mx.com.gm.service.EventoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,6 +37,12 @@ public class EventoController {
         return ResponseEntity.ok( eservice.ProximosEventosByDeportistaId(id));
     }
     
+    @GetMapping("/eventosFuturosOrg/{id}")
+    public ResponseEntity<List<Evento>> listEventosByOrganizacion(@PathVariable Long id){
+        return ResponseEntity.ok( eservice.ProximosEventosByOrganizacionId(id));
+    }
+    
+    
     @PostMapping(value = "/organizacion/crear",
     consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Evento> crearEvento( @RequestPart("archivo") MultipartFile archivo,
@@ -47,5 +56,20 @@ public class EventoController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(null);
         }
+    }
+     @PutMapping("/actualizarEvento/{id}")
+    public ResponseEntity<Evento> actualizarEvento(@PathVariable Long id, @RequestPart("evento") EventoDTO eventoDTO) {
+        System.out.println(eventoDTO);
+        Evento eventoActualizado = eservice.actualizarEvento(id, eventoDTO);
+         System.out.println(eventoDTO);
+        return ResponseEntity.ok(eventoActualizado);
+    }
+    @DeleteMapping("/eliminarEvento/{id}")
+    public ResponseEntity<ResponseAPI> deleteEvento(@PathVariable Long id){
+        eservice.eliminarEvento(id);
+        ResponseAPI response = new ResponseAPI();
+        response.setMessage("Eliminado correctamente");
+        response.setSuccess(true);
+        return ResponseEntity.ok(response);
     }
 }

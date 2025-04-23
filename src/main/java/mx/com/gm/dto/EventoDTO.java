@@ -26,4 +26,5 @@ public class EventoDTO {
     private Boolean excluirFines;
     private List<EventoFechaDTO> fechas;
     private Long equiposInscritos;
+    private boolean esFuturo;
 }

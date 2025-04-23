@@ -67,4 +67,9 @@ public class Evento implements Serializable{
     private Long equiposInscritos;
     
     private String imagen;
+    
+    public boolean esFuturo() {
+        LocalDate hoy = LocalDate.now();
+        return this.fecha.isAfter(hoy) || this.fecha.isEqual(hoy);
+    }
 }
