@@ -17,6 +17,6 @@ public interface EventoDao extends JpaRepository<Evento,Long> {
            "ORDER BY e.fecha ASC")
     List<Evento> findProximosEventosByDeportistaId(@Param("deportistaId") Long deportistaId);
     
-     @Query("SELECT e FROM Evento e WHERE e.organizacion.id = :idOrganizacion AND e.fecha >= CURRENT_DATE")
+     @Query("SELECT e FROM Evento e WHERE e.organizacion.id = :idOrganizacion")
     List<Evento> findEventosFuturosByOrganizacion(@Param("idOrganizacion") Long idOrganizacion);
 }

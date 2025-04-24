@@ -3,6 +3,7 @@ package mx.com.gm.web;
 import java.io.IOException;
 import java.util.List;
 import mx.com.gm.domain.Evento;
+import mx.com.gm.dto.EventoConEquiposDTO;
 import mx.com.gm.dto.EventoDTO;
 import mx.com.gm.dto.ResponseAPI;
 import mx.com.gm.service.EventoService;
@@ -71,5 +72,9 @@ public class EventoController {
         response.setMessage("Eliminado correctamente");
         response.setSuccess(true);
         return ResponseEntity.ok(response);
+    }
+     @GetMapping("/proximosEquipos/{id}")
+    public List<EventoConEquiposDTO> getProximosEventosConEquipos(@PathVariable Long id) {
+        return eservice.getProximosEventosConEquipos(id);
     }
 }

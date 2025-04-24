@@ -61,6 +61,7 @@ public class SecurityConfig {
                         .requestMatchers("/eventosFuturosOrg/**").hasAnyAuthority("organizacion")
                         .requestMatchers("/actualizarEvento/**").hasAnyAuthority("organizacion")
                         .requestMatchers("/eliminarEvento/**").hasAnyAuthority("organizacion")
+                        .requestMatchers("/proximosEquipos").hasAnyAuthority("organizacion")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

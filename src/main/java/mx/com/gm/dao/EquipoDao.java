@@ -15,4 +15,7 @@ public interface EquipoDao extends JpaRepository<Equipo,Long>{
         WHERE je.id_deportista = :jugadorId 
         """, nativeQuery = true)
     List<Equipo> findEquiposActivosByJugadorIdNative(@Param("jugadorId") Long jugadorId);
+    
+    @Query(value = "SELECT e.* FROM equipo e JOIN evento_equipo ee ON e.id = ee.id_equipo WHERE ee.id_evento = :eventoId", nativeQuery = true)
+    List<Equipo> findEquiposByEventoIdNative(@Param("eventoId") Long eventoId);
 }

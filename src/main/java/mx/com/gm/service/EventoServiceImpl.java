@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import mx.com.gm.dao.DeporteDao;
+import mx.com.gm.dao.EquipoDao;
 import mx.com.gm.dao.EventoDao;
 import mx.com.gm.dao.EventoFechaDao;
 import mx.com.gm.dao.OrganizacionDao;
@@ -15,6 +16,7 @@ import mx.com.gm.domain.Deporte;
 import mx.com.gm.domain.Evento;
 import mx.com.gm.domain.EventoFecha;
 import mx.com.gm.domain.Organizacion;
+import mx.com.gm.dto.EventoConEquiposDTO;
 import mx.com.gm.dto.EventoDTO;
 import mx.com.gm.dto.TipoRecurso;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,9 @@ public class EventoServiceImpl implements EventoService{
     
     @Autowired 
     FileStorageService fsservice;
+    
+    @Autowired
+    EquipoDao eqdao;
     
 
     @Override
@@ -213,9 +218,31 @@ public class EventoServiceImpl implements EventoService{
         eventoExistente.setEstado(eventoActualizado.getEstado());
         eventoExistente.setRecurrente(eventoActualizado.getRecurrente());
         eventoExistente.setFrecuencia(eventoActualizado.getFrecuencia());
-        eventoExistente.setDiasSemana(eventoActualizado.getDiasSemana().toString());
+        if (eventoActualizado.getFrecuencia().equals("MENSUAL")||eventoActualizado.getFrecuencia().equals("ANUAL")){
+            eventoExistente.setDiasSemana(null);
+        }   else{
+            eventoExistente.setDiasSemana(eventoActualizado.getDiasSemana().toString());
+        }
         eventoExistente.setExcluirFines(eventoActualizado.getExcluirFines());
+        if (eventoActualizado.getRecurrente()) {
+            efdao.deleteByEventoId(id);
+            
+            generarFechasRecurrentes(eventoExistente, eventoActualizado);
+        } else {
+            efdao.deleteByEventoId(id);
+            generarFechaUnica(eventoExistente, eventoActualizado);
+        }
         return edao.save(eventoExistente);
+    }
+    @Override
+     public List<EventoConEquiposDTO> getProximosEventosConEquipos(Long org) {
+        List<Evento> eventos = edao.findEventosFuturosByOrganizacion(org);
+        return eventos.stream()
+            .map(evento -> new EventoConEquiposDTO(
+                evento,
+                eqdao.findEquiposByEventoIdNative(evento.getId())
+            ))
+            .toList();
     }
 
 }
