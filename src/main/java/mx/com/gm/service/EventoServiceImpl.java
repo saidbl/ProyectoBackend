@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import mx.com.gm.dao.DeporteDao;
 import mx.com.gm.dao.EquipoDao;
@@ -243,6 +245,14 @@ public class EventoServiceImpl implements EventoService{
                 eqdao.findEquiposByEventoIdNative(evento.getId())
             ))
             .toList();
+    }
+
+    @Override
+    public Map<String, Object> getEstadisticasGenerales(Long org) {
+        Map<String, Object> stats = new HashMap<>();
+        stats.put("eventosPorMes", edao.countEventosPorMes(org));
+        stats.put("participacionEventos", edao.getParticipacionEventos(org));
+        return stats;
     }
 
 }

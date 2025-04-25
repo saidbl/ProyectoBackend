@@ -2,6 +2,7 @@ package mx.com.gm.web;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import mx.com.gm.domain.Evento;
 import mx.com.gm.dto.EventoConEquiposDTO;
 import mx.com.gm.dto.EventoDTO;
@@ -76,5 +77,9 @@ public class EventoController {
      @GetMapping("/proximosEquipos/{id}")
     public List<EventoConEquiposDTO> getProximosEventosConEquipos(@PathVariable Long id) {
         return eservice.getProximosEventosConEquipos(id);
+    }
+    @GetMapping("/generalesorg/{id}")
+    public ResponseEntity<Map<String, Object>> getEstadisticasGenerales(@PathVariable Long id) {
+        return ResponseEntity.ok(eservice.getEstadisticasGenerales(id));
     }
 }

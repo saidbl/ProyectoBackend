@@ -19,4 +19,14 @@ public interface EventoDao extends JpaRepository<Evento,Long> {
     
      @Query("SELECT e FROM Evento e WHERE e.organizacion.id = :idOrganizacion")
     List<Evento> findEventosFuturosByOrganizacion(@Param("idOrganizacion") Long idOrganizacion);
+    
+    @Query("SELECT FUNCTION('date_format', e.fecha, '%Y-%m') as mes, COUNT(e) as total " +
+           "FROM Evento e "+
+           "WHERE e.organizacion.id = :idOrganizacion "+
+           "GROUP BY FUNCTION('date_format', e.fecha, '%Y-%m')" )
+    List<Object[]> countEventosPorMes(@Param("idOrganizacion") Long idOrganizacion);
+    
+    @Query("SELECT e.nombre, e.equiposInscritos, e.numMaxEquipos FROM Evento e "+
+            "WHERE e.organizacion.id = :idOrganizacion")
+    List<Object[]> getParticipacionEventos(@Param("idOrganizacion") Long idOrganizacion);
 }
