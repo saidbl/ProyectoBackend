@@ -1,10 +1,12 @@
 
 package mx.com.gm.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import java.util.HashMap;
 import java.util.List;
 import mx.com.gm.dao.OrganizacionDao;
 import mx.com.gm.domain.Organizacion;
+import mx.com.gm.dto.OrganizacionDTO;
 import mx.com.gm.dto.ResponseAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -56,6 +58,25 @@ public class OrganizacionServiceImpl implements OrganizacionService{
             response.setMessage("Contraseña o email incorrecto");
         }
         return response;
+    }
+
+    @Override
+    public Organizacion getbyId(Long id) {
+        return odao.findById(id) 
+        .orElseThrow(() -> new EntityNotFoundException("Organización no encontrada"));
+    }
+
+    @Override
+    public Organizacion update(Long id, OrganizacionDTO odto) {
+        Organizacion oExistente = odao.findById(id)
+            .orElseThrow(() -> new RuntimeException("Deporte no encontrada"));
+        oExistente.setDireccion(odto.getDireccion());
+        oExistente.setEmail(odto.getEmail());
+        oExistente.setNombre(odto.getNombre());
+        oExistente.setNombreOrganizacion(odto.getNombreOrganizacion());
+        oExistente.setTelefono(odto.getTelefono());
+        oExistente.setTipo(odto.getTipo());
+        return odao.save(oExistente);
     }
     }
     
