@@ -64,6 +64,8 @@ public class SecurityConfig {
                         .requestMatchers("/proximosEquipos").hasAnyAuthority("organizacion")
                         .requestMatchers("/generalesorg/**").hasAnyAuthority("organizacion")
                         .requestMatchers("/obtenerOrg/**").hasAnyAuthority("organizacion")
+                        .requestMatchers("/deportista/**").hasAnyAuthority("deportista")
+                        .requestMatchers("deportistaRendimiento/**").hasAnyAuthority("deportista")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -1,5 +1,6 @@
 package mx.com.gm.service;
 
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -47,5 +48,5 @@ public class CheckinRutinaServiceImpl implements CheckinRutinaService{
     public List<CheckinRutina> listByDeportistaId(Long id) {
         return crdao.findByDeportistaIdAndEstado(id);
     }
-    
-}
+    }
+
