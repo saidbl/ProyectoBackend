@@ -18,4 +18,7 @@ public class TipoMetrica implements Serializable{
     @JoinColumn(name = "id_deporte", nullable = false)
     private Deporte deporte;
     private boolean esObjetivo;
+    @ManyToOne
+    @JoinColumn(name = "id_deportista", nullable = false)
+    private Deportista deportista;
 }
