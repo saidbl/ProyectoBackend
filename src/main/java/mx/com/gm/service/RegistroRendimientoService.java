@@ -5,6 +5,6 @@ import mx.com.gm.domain.RegistroRendimiento;
 import mx.com.gm.dto.RegistroRendimientoDTO;
 
 public interface RegistroRendimientoService {
-    public List<RegistroRendimiento> getRendimientoDeportista(Long deportistaid, String periodo);
+    public List<RegistroRendimiento> getRendimientoDeportista(Long deportistaid);
     public RegistroRendimiento add (RegistroRendimientoDTO rdto);
 }

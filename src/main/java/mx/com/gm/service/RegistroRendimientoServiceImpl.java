@@ -1,6 +1,5 @@
 package mx.com.gm.service;
 
-import java.time.LocalDate;
 import java.util.List;
 import mx.com.gm.dao.DeportistaDao;
 import mx.com.gm.dao.RegistroRendimientoDao;
@@ -24,24 +23,8 @@ public class RegistroRendimientoServiceImpl implements RegistroRendimientoServic
     TipoMetricaDao tmdao;
 
     @Override
-    public List<RegistroRendimiento> getRendimientoDeportista(Long deportistaid, String periodo) {
-        LocalDate endDate = LocalDate.now();
-        LocalDate startDate = endDate.minusMonths(1); 
-        if (periodo != null) {
-            switch (periodo) {
-                case "3m" -> startDate = endDate.minusMonths(3);
-                case "6m" -> startDate = endDate.minusMonths(6);
-                case "1y" -> startDate = endDate.minusYears(1);
-                case "all" -> startDate = null;
-            }
-        }
-        List<RegistroRendimiento> registros;
-        if (startDate != null) {
-            registros = rrdao.findByDeportistaAndFechaBetween(deportistaid, startDate, endDate);
-        } else {
-            registros = rrdao.findByDeportistaId(deportistaid);
-        }
-        return registros;
+    public List<RegistroRendimiento> getRendimientoDeportista(Long deportistaid) {
+        return rrdao.findByDeportistaId(deportistaid);
     }
 
     @Override

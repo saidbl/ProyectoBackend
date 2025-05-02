@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -18,15 +17,14 @@ public class RegistroRendimientoController {
     @Autowired 
     RegistroRendimientoService rrservice;
     
-    @PostMapping("/deportista/agregarRendimiento")
+    @PostMapping("/agregarRecord")
     public ResponseEntity<RegistroRendimiento>add(@RequestBody RegistroRendimientoDTO rrdto){
         RegistroRendimiento r = rrservice.add(rrdto);
         return ResponseEntity.ok(r);
     }
-    @GetMapping("/deportista/obtenerRendimiento/{id}")
-    public List<RegistroRendimiento>listar(@PathVariable Long deportistaId,
-            @RequestParam(required = false) String periodo){
-        return rrservice.getRendimientoDeportista(deportistaId, periodo);
+    @GetMapping("/recordsJugador/{id}")
+    public List<RegistroRendimiento>listar(@PathVariable Long id){
+        return rrservice.getRendimientoDeportista(id);
     }
     
 }
