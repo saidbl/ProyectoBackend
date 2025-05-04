@@ -23,6 +23,7 @@ public class EventoEquipoController {
     }
     @PostMapping("/eventosEquipo/vincular")
     public ResponseEntity<EventoEquipo> agregarJugador(@RequestBody EventoEquipoDTO vinculacion) {
+        System.out.println(vinculacion);
         EventoEquipo nuevaVinculacion = eeservice.add(vinculacion);
         return ResponseEntity.ok(nuevaVinculacion);
     }
