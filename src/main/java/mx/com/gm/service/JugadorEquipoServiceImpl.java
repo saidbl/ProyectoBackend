@@ -47,5 +47,18 @@ public class JugadorEquipoServiceImpl implements JugadorEquipoService{
 
     return jedao.save(jugadorEquipo);
     }
+
+    @Override
+    public void delete(Long id) {
+        int contador;
+        JugadorEquipo je = jedao.findById(id)
+                .orElseThrow(() -> new RuntimeException("Rutina no encontrada"));;
+        Equipo e = je.getEquipo();
+        contador = e.getJugadoresAsociados();
+        contador --;
+        e.setJugadoresAsociados(contador);
+        edao.save(e);
+        jedao.deleteById(id);
+    }
     
 }

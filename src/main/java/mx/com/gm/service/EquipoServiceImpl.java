@@ -1,6 +1,8 @@
 package mx.com.gm.service;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 import mx.com.gm.dao.DeporteDao;
 import mx.com.gm.dao.EquipoDao;
 import mx.com.gm.dao.InstructorDao;
@@ -8,8 +10,10 @@ import mx.com.gm.domain.Deporte;
 import mx.com.gm.domain.Equipo;
 import mx.com.gm.domain.Instructor;
 import mx.com.gm.dto.EquipoDTO;
+import mx.com.gm.dto.TipoRecurso;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class EquipoServiceImpl implements EquipoService{
@@ -23,6 +27,9 @@ public class EquipoServiceImpl implements EquipoService{
     @Autowired
     private DeporteDao pdao;
     
+    @Autowired 
+    FileStorageService fsservice;
+    
     @Override
     public List<Equipo> listByIdInstructor(Long id) {
         return edao.findByInstructorId(id);
@@ -34,7 +41,17 @@ public class EquipoServiceImpl implements EquipoService{
     }
 
     @Override
-    public Equipo add(EquipoDTO e) {
+    public Equipo add(EquipoDTO e, MultipartFile archivo)throws IOException  {
+        TipoRecurso tipo = TipoRecurso.fromContentType(archivo.getContentType());
+        if (tipo == null) {
+            throw new IllegalArgumentException("Tipo de archivo no soportado: " + archivo.getContentType());
+        }
+        String nombreArchivo = UUID.randomUUID() + "_" + archivo.getOriginalFilename();
+        String rutaArchivo = fsservice.guardarArchivo(
+            archivo.getInputStream(), 
+            tipo.getNombreCarpeta(), 
+            nombreArchivo
+        );
         Instructor instructor = idao.findById(e.getIdinstructor())
                 .orElseThrow(() -> new RuntimeException("Instructor no encontrado"));
 
@@ -50,6 +67,7 @@ public class EquipoServiceImpl implements EquipoService{
         equipo.setEstado(e.getEstado());
         equipo.setCategoria(e.getCategoria());
         equipo.setJugadoresAsociados(e.getJugadoresAsociados());
+        equipo.setImg(rutaArchivo);
         return edao.save(equipo);
     }
 

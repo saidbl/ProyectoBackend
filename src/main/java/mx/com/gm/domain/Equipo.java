@@ -41,4 +41,6 @@ public class Equipo implements Serializable{
     @Column(name = "jugadores_asociados")
     private Integer jugadoresAsociados;
     
+    private String img;
+    
 }

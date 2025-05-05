@@ -7,4 +7,5 @@ import mx.com.gm.dto.JugadorEquipoDTO;
 public interface JugadorEquipoService {
     public List<JugadorEquipo> listByIdEquipo(Long id);
     public JugadorEquipo add(JugadorEquipoDTO rj);
+    public void delete(Long id);
 }
