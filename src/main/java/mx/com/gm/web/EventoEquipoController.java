@@ -1,12 +1,14 @@
 package mx.com.gm.web;
 
 import java.util.List;
+import mx.com.gm.domain.Equipo;
 import mx.com.gm.domain.EventoEquipo;
 import mx.com.gm.dto.EventoEquipoDTO;
 import mx.com.gm.service.EventoEquipoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,5 +28,9 @@ public class EventoEquipoController {
         System.out.println(vinculacion);
         EventoEquipo nuevaVinculacion = eeservice.add(vinculacion);
         return ResponseEntity.ok(nuevaVinculacion);
+    }
+    @GetMapping("/eventosEquipo/listar/{id}")
+    public List<Equipo> listarEquiposEvento(@PathVariable Long id){
+        return eeservice.listarEquiposEvento(id);
     }
 }

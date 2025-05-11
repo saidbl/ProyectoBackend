@@ -75,5 +75,27 @@ public class EquipoServiceImpl implements EquipoService{
     public List<Equipo> listbyidjugador(Long id) {
         return edao.findEquiposActivosByJugadorIdNative(id);
     }
+    @Override
+    public Equipo updateEquipo(EquipoDTO equipoDTO, MultipartFile imagen) throws IOException{
+        Equipo equipo = edao.findById(equipoDTO.getId())
+            .orElseThrow(() -> new RuntimeException("Instructor no encontrado"));
+        equipo.setNombre(equipoDTO.getNombre());
+        equipo.setMaxJugadores(equipoDTO.getMaxJugadores());
+        equipo.setEstado(equipoDTO.getEstado());
+        equipo.setCategoria(equipoDTO.getCategoria());
+        if (imagen != null && !imagen.isEmpty()) {
+            TipoRecurso tipo = TipoRecurso.fromContentType(imagen.getContentType());
+            String nombreArchivo = UUID.randomUUID() + "_" + imagen.getOriginalFilename();
+            String rutaArchivo = fsservice.guardarArchivo(
+            imagen.getInputStream(), 
+            tipo.getNombreCarpeta(), 
+            nombreArchivo
+        );
+            fsservice.eliminarArchivo(equipo.getImg());
+            equipo.setImg(rutaArchivo);
+        }
+        
+        return edao.save(equipo);
+    }
     
 }

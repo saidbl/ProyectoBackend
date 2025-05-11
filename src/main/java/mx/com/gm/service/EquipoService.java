@@ -11,4 +11,5 @@ public interface EquipoService {
     void delete(Long id);
     public Equipo add(EquipoDTO e,MultipartFile archivo)throws IOException;
     public List<Equipo> listbyidjugador(Long id);
+    public Equipo updateEquipo(EquipoDTO equipoDTO, MultipartFile imagen) throws IOException;
 }

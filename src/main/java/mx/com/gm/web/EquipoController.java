@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -54,5 +55,23 @@ public class EquipoController {
     @GetMapping("/equiposDeportista/{id}")
     public List<Equipo> listByDeportistaId (@PathVariable Long id){
         return eservice.listbyidjugador(id);
+    }
+    
+    @PutMapping(value = "/equipos/editar/{id}",
+    consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> updateEquipo(
+            @PathVariable Long id,
+            @RequestPart("equipo") EquipoDTO equipoDTO,
+            @RequestPart(value = "imagen", required = false) MultipartFile imagen) {
+        if (!id.equals(equipoDTO.getId())) {
+            return ResponseEntity.badRequest().body("ID no coincide");
+        }
+        try {
+            Equipo equipoActualizado = eservice.updateEquipo(equipoDTO, imagen);
+            System.out.println(imagen);
+            return ResponseEntity.ok(equipoActualizado);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Error al actualizar el equipo");
+        }
     }
 }
