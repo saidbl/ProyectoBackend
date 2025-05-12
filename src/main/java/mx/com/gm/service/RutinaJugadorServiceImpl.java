@@ -42,5 +42,10 @@ public class RutinaJugadorServiceImpl implements RutinaJugadorService{
 
         return rdao.save(rjj);
     }
+
+    @Override
+    public void delete(Long id) {
+        rdao.deleteById(id);
+    }
     
 }

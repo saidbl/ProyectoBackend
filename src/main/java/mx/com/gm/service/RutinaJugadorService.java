@@ -6,4 +6,5 @@ import mx.com.gm.dto.RutinaJugadorDTO;
 public interface RutinaJugadorService {
     public List<RutinaJugador> listbyJugadorId(Long id);
     public RutinaJugador add(RutinaJugadorDTO rj);
+    public void delete(Long id);
 }

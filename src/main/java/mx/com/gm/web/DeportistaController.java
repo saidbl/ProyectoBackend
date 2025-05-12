@@ -3,6 +3,7 @@ package mx.com.gm.web;
 
 import java.util.List;
 import mx.com.gm.domain.Deportista;
+import mx.com.gm.dto.DeportistaRendimiento;
 import mx.com.gm.dto.ResponseAPI;
 import mx.com.gm.service.DeportistaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,5 +31,9 @@ public class DeportistaController {
     public List<Deportista> list(@RequestParam Long id){
         System.out.println(id);
         return dservice.listByIdInstructor(id);
+    }
+    @GetMapping("/deportistas/CheckRendObj")
+    public List<DeportistaRendimiento> listCheckRenObk(@RequestParam Long id){
+        return dservice.listByIdInstructorObjRendCheck(id);
     }
 }

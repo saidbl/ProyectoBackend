@@ -1,7 +1,20 @@
 package mx.com.gm.service;
+import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
+import mx.com.gm.dao.CheckinRutinaDao;
 import mx.com.gm.dao.DeportistaDao;
+import mx.com.gm.dao.MedicionFisicaDao;
+import mx.com.gm.dao.ObjetivoRendimientoDao;
+import mx.com.gm.dao.RegistroRendimientoDao;
+import mx.com.gm.dao.RutinaDao;
 import mx.com.gm.domain.Deportista;
+import mx.com.gm.domain.MedicionFisica;
+import mx.com.gm.domain.ObjetivoRendimiento;
+import mx.com.gm.domain.RegistroRendimiento;
+import mx.com.gm.dto.DeportistaRendimiento;
+import mx.com.gm.dto.EvolucionFisicaDTO;
+import mx.com.gm.dto.ProgresoObjetivoDTO;
 import mx.com.gm.dto.ResponseAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,6 +26,16 @@ import org.springframework.stereotype.Service;
 public class DeportistaServiceImpl implements DeportistaService{
     @Autowired
     DeportistaDao ddao;
+    @Autowired 
+    RegistroRendimientoDao rrdao;
+    @Autowired
+    ObjetivoRendimientoDao ordao;
+    @Autowired
+    CheckinRutinaDao chrdao;
+    @Autowired 
+    MedicionFisicaDao mfdao;
+    @Autowired 
+    ObjetivoRendimientoServiceImpl ori;
 
     @Autowired
     private AuthenticationManager am;
@@ -60,5 +83,54 @@ public class DeportistaServiceImpl implements DeportistaService{
     public List<Deportista> listByIdInstructor(Long id) {
         return ddao.findByInstructorId(id);
     }
+    @Override
+    public List<DeportistaRendimiento> listByIdInstructorObjRendCheck(Long id) {
+        List <Deportista> deportistas = ddao.findByInstructorId(id);
+        List<DeportistaRendimiento> drendimiento= new ArrayList<>();
+        for(Deportista deportista:deportistas){
+            DeportistaRendimiento dr= new DeportistaRendimiento();
+            dr.setDeportista(deportista);
+            List<RegistroRendimiento> rr = rrdao.findByDeportistaId(deportista.getId());
+            dr.setRegistrosRendimiento(rr);
+            List<ObjetivoRendimiento> totales = ordao.findByDeportistaId(deportista.getId());
+            dr.setObjetivosTotales(totales);
+            List<ObjetivoRendimiento> incomp = ordao.findByDeportistaIdAndCompletadoFalse(deportista.getId());
+            dr.setObjetivosIncompletos(incomp);
+            Long rutinasCompletadas = chrdao.countByDeportistaIdAndEstado(deportista.getId());
+            Long rutinasTotales = chrdao.countByDeportistaId(deportista.getId());
+            dr.setTotalRutinas(rutinasTotales);
+            dr.setRutinasCompletadas(rutinasCompletadas);
+            LocalDate fechaFin = LocalDate.now();
+            LocalDate fechaInicio = fechaFin.minusMonths(3);
+            List<MedicionFisica> ef = mfdao
+                .findByDeportistaAndRangoFechas(deportista.getId(), fechaInicio, fechaFin);
+            List<EvolucionFisicaDTO> efisica = ef.stream()
+                .map(this::convertirADTO)
+                .collect(Collectors.toList());
+            dr.setEvolucionFisica(efisica);
+            List<ProgresoObjetivoDTO> podto = ori.obtenerProgresoObjetivos(deportista.getId());
+            dr.setProgresoObjetivo(podto);
+            drendimiento.add(dr);
+        }
+        return drendimiento;
+    }
+    private EvolucionFisicaDTO convertirADTO(MedicionFisica medicion) {
+        EvolucionFisicaDTO dto = new EvolucionFisicaDTO();
+        dto.setFecha(medicion.getFecha());
+        dto.setPeso(medicion.getPeso());
+        dto.setImc(medicion.getImc());
+        dto.setMasaMuscular(medicion.getMasaMuscular());
+        dto.setPorcentajeGrasa(medicion.getPorcentajeGrasa());
+        dto.setClasificacionIMC(clasificarIMC(medicion.getImc()));
+        return dto;
+    }
+     private String clasificarIMC(Double imc) {
+        if (imc == null) return "No calculado";
+        if (imc < 18.5) return "Bajo peso";
+        if (imc < 25) return "Normal";
+        if (imc < 30) return "Sobrepeso";
+        return "Obesidad";
+    }
+    
     
 }
