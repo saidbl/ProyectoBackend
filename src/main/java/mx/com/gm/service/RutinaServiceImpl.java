@@ -187,4 +187,20 @@ public class RutinaServiceImpl implements RutinaService{
         int dia = calendar.get(Calendar.DAY_OF_WEEK);
         return diasSemana.get(dia == 1 ? 7 : dia - 1);
     }
+
+    @Override
+    public Rutina edit(Long id, RutinaDTO rdto) {
+         Rutina rExistente = rdao.findById(id)
+            .orElseThrow(() -> new RuntimeException("Rutina no encontrada"));
+         Posicion p = pdao.findById(rdto.getIdPosicion())
+                 .orElseThrow(() -> new RuntimeException("Posicion no encontrada"));;
+         rExistente.setDescripcion(rdto.getDescripcion());
+         rExistente.setDia(rdto.getDia());
+         rExistente.setDuracion_esperada(rdto.getDuracion_esperada());
+         rExistente.setNivel_dificultad(rdto.getNivel_dificultad());
+         rExistente.setNombre(rdto.getNombre());
+         rExistente.setObjetivo(rdto.getObjetivo());
+         rExistente.setPosicion(p);
+         return rdao.save(rExistente);
+    }
 }

@@ -32,11 +32,18 @@ public class EquipoController {
     }
     @DeleteMapping("/equipos/eliminar/{id}")
     public ResponseEntity<ResponseAPI> eliminarEquipo(@PathVariable Long id) {
+        try{
         eservice.delete(id);
         ResponseAPI response = new ResponseAPI();
         response.setMessage("Eliminado correctamente");
         response.setSuccess(true);
         return ResponseEntity.ok(response);
+         } catch (Exception e) {
+        ResponseAPI errorResponse = new ResponseAPI();
+        errorResponse.setMessage("Error al eliminar el equipo");
+        errorResponse.setSuccess(false);
+        return ResponseEntity.internalServerError().body(errorResponse);
+        }
     }
     @PostMapping(value = "/equipos/agregar",
     consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

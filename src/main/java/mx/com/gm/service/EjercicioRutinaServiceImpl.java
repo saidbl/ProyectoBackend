@@ -43,6 +43,22 @@ public class EjercicioRutinaServiceImpl implements EjercicioRutinaService {
         edao.deleteById(er);
     }
 
+    @Override
+    public EjercicioRutina edit(Long id, EjercicioRutinaDTO edto) {
+       EjercicioRutina er = edao.findById(id)
+               .orElseThrow(() -> new RuntimeException("Rutina no encontrada"));
+       Rutina r = rdao.findById(edto.getIdrutina())
+               .orElseThrow(() -> new RuntimeException("Rutina no encontrada"));
+       er.setDescanso(edto.getDescanso());
+       er.setDescripcion(edto.getDescripcion());
+       er.setNombre(edto.getNombre());
+       er.setOrden(edto.getOrden());
+       er.setRepeticiones(edto.getRepeticiones());
+       er.setRutina(r);
+       er.setSeries(edto.getSeries());
+       return edao.save(er);
+    }
+
     
 
 

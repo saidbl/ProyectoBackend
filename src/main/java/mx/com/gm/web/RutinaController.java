@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -60,5 +61,10 @@ public class RutinaController {
     @GetMapping("/deportista/{id}")
     public ResponseEntity<List<RutinaDTO>> listRutinas(@PathVariable Long id){
         return ResponseEntity.ok( rservice.rutinasByDiaAndDia(id));
+    }
+    @PutMapping("/rutinas/editar/{id}")
+    public ResponseEntity<Rutina> editarRutina(@PathVariable Long id, @RequestBody RutinaDTO rdto){
+        Rutina r = rservice.edit(id,rdto);
+        return ResponseEntity.ok(r);
     }
 }

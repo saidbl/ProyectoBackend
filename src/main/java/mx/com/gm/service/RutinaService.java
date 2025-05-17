@@ -14,4 +14,5 @@ public interface RutinaService {
     public List<Rutina> getTop3RutinasPopularesPorInstructor(Long instructorId);
     public List<RutinaDTO> rutinasEjerciciosRecursos(Long deportistaid);
     public List<RutinaDTO> rutinasByDiaAndDia(Long deportistaid);
+    public Rutina edit(Long id, RutinaDTO rdto);
 }

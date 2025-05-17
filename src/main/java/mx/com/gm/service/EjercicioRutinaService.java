@@ -8,4 +8,5 @@ public interface EjercicioRutinaService {
    public List<EjercicioRutina> listarPorIdInstructor(Long idInstructor);
    public EjercicioRutina add (EjercicioRutinaDTO erdto);
    public void delete(Long er);
+   public EjercicioRutina edit(Long id, EjercicioRutinaDTO edto);
 }

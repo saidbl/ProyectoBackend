@@ -4,11 +4,13 @@ package mx.com.gm.web;
 import java.io.IOException;
 import java.util.List;
 import mx.com.gm.domain.RecursoRutina;
+import mx.com.gm.dto.ResponseAPI;
 import mx.com.gm.dto.TipoRecurso;
 import mx.com.gm.service.RecursoRutinaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -55,6 +57,13 @@ public class RecursoController {
     public ResponseEntity<List<RecursoRutina>> listarVideos(@PathVariable Long instructorId) {
         List<RecursoRutina> recursos = recursoService.listByInstructor(instructorId);
         return ResponseEntity.ok(recursos);
+    }
+    @DeleteMapping("/ejercicio/eliminar/{id}")
+    public ResponseEntity<ResponseAPI> eliminarVideos(@PathVariable Long id) throws IOException{
+        recursoService.eliminarRecurso(id);
+        ResponseAPI response = new ResponseAPI();
+        response.setMessage("Eliminado correctamente");
+        return ResponseEntity.ok(response);
     }
 }
 

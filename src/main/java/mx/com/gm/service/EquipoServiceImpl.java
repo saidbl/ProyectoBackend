@@ -36,7 +36,10 @@ public class EquipoServiceImpl implements EquipoService{
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(Long id) throws IOException{
+        Equipo equipo = edao.findById(id)
+            .orElseThrow(() -> new RuntimeException("Instructor no encontrado"));
+        fsservice.eliminarArchivo(equipo.getImg());
         edao.deleteById(id);
     }
 

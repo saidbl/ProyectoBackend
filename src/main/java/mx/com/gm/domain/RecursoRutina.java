@@ -15,9 +15,8 @@ public class RecursoRutina implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "id_ejercicio_rutina", nullable = false)
-    @JsonBackReference
     private EjercicioRutina ejercicioRutina;
 
     @Enumerated(EnumType.STRING)
