@@ -51,6 +51,10 @@ public class FileStorageService {
     }
 
     public void eliminarArchivo(String rutaRelativa) throws IOException {
+        if (rutaRelativa == null || rutaRelativa.isBlank()) {
+        System.out.println("Nombre de archivo nulo o vacío. No se puede eliminar.");
+        return;
+    }
         Path archivo = this.rootLocation.resolve(rutaRelativa).normalize();
         Files.deleteIfExists(archivo);
     }

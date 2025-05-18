@@ -2,7 +2,6 @@
 package mx.com.gm.web;
 
 import java.util.List;
-import mx.com.gm.domain.Evento;
 import mx.com.gm.domain.Organizacion;
 import mx.com.gm.dto.OrganizacionDTO;
 import mx.com.gm.dto.ResponseAPI;

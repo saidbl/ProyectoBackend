@@ -2,14 +2,19 @@ package mx.com.gm.web;
 
 import java.util.List;
 import mx.com.gm.domain.Instructor;
+import mx.com.gm.dto.InstructorDTO;
 import mx.com.gm.dto.ResponseAPI;
 import mx.com.gm.service.InstructorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 public class InstructorController {
@@ -23,5 +28,21 @@ public class InstructorController {
     public ResponseEntity<ResponseAPI> login (@RequestBody ResponseAPI req){
         return ResponseEntity.ok(iservice.login(req));
     }
-    
+    @GetMapping("/instructor/{id}")
+    public ResponseEntity<Instructor> getInstructorById(@PathVariable Long id ){
+        return ResponseEntity.ok(iservice.getById(id));
+    }
+     @PutMapping("/instructor/editar/{id}")
+    public ResponseEntity<?> updateInstructor(
+            @PathVariable Long id,
+            @RequestPart("instructor") InstructorDTO instructorDTO,
+            @RequestPart(value = "foto", required = false) MultipartFile file) {
+         try {
+        Instructor updated= iservice.update(id, instructorDTO, file);
+        return ResponseEntity.ok(updated);
+                }catch (Exception e) {
+                    e.printStackTrace();
+            return ResponseEntity.internalServerError().body("Error al actualizar el instructor");
+        }
+    }
 }

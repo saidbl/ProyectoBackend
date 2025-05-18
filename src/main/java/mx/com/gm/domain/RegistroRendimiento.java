@@ -1,5 +1,6 @@
 package mx.com.gm.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -15,10 +16,12 @@ public class RegistroRendimiento implements Serializable{
     private Long id;
     
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "id_deportista", nullable = false)
     private Deportista deportista;
     
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "id_metrica", nullable = false)
     private TipoMetrica metrica;
     

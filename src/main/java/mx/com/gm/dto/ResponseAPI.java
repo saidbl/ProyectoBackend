@@ -34,6 +34,7 @@ public class ResponseAPI {
     private String nombre;
     private String apellido;
     private String posicion;
+    private String fotoPerfil;
 
    
 }
