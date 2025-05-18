@@ -75,6 +75,7 @@ public class SecurityConfig {
                         .requestMatchers("/progresoObjetivos/**").hasAnyAuthority("deportista")
                         .requestMatchers("/desasociar/**").hasAnyAuthority("instructor")
                         .requestMatchers("/instructor").hasAnyAuthority("instructor")
+                        .requestMatchers("/estadisticasInstructor/**").hasAnyAuthority("instructor")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

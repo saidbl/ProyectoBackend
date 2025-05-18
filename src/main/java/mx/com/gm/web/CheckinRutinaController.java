@@ -5,6 +5,7 @@ import java.util.Map;
 import mx.com.gm.domain.CheckinRutina;
 import mx.com.gm.dto.CheckinRutinaDTO;
 import mx.com.gm.dto.CumplimientoRutinasDTO;
+import mx.com.gm.dto.ResumenCumplimientoDTO;
 import mx.com.gm.service.CheckinRutinaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -48,4 +49,8 @@ public class CheckinRutinaController {
                     Map.of("error", e.getMessage()));
         }
     }
+    @GetMapping("/estadisticasInstructor/{id}")
+        public ResponseEntity<ResumenCumplimientoDTO> getCumplimientoRutinas(@PathVariable Long id) {
+            return ResponseEntity.ok(crservice.obtenerCumplimientoRutinas(id));
+        }
 }

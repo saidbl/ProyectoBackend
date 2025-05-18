@@ -36,4 +36,32 @@ public interface CheckinRutinaDao  extends JpaRepository<CheckinRutina,Integer>{
     List<Object[]> countByJugadorIdGroupByDiaSemana(
             @Param("jugadorId") Long jugadorId,
             @Param("fechaInicio") LocalDate fechaInicio);
+    
+        @Query("SELECT c.estado, COUNT(c) FROM CheckinRutina c " +
+               "WHERE c.fecha BETWEEN :inicio AND :fin " +
+               "AND c.jugador.instructor.id = :instructorId " +
+               "GROUP BY c.estado")
+        List<Object[]> getResumenCompliance(
+            @Param("inicio") LocalDate inicio,
+            @Param("fin") LocalDate fin,
+            @Param("instructorId") Long instructorId
+        );
+        
+        @Query("SELECT DAYOFWEEK(c.fecha), " +
+               "SUM(CASE WHEN c.estado = 'COMPLETADA' THEN 1 ELSE 0 END) * 100.0 / COUNT(c) " +
+               "FROM CheckinRutina c " +
+               "WHERE c.fecha BETWEEN :inicio AND :fin " +
+               "AND c.jugador.instructor.id = :instructorId " +
+               "GROUP BY DAYOFWEEK(c.fecha)")
+        List<Object[]> getCompliancePorDia(
+            @Param("inicio") LocalDate inicio,
+            @Param("fin") LocalDate fin,
+            @Param("instructorId") Long instructorId
+        );
+        
+        @Query("SELECT c.jugador, COUNT(c) as total FROM CheckinRutina c JOIN c.jugador j JOIN j.instructor i WHERE c.estado IN ('INCOMPLETA', 'PENDIENTE') AND c.fecha BETWEEN :fechaInicio AND :fechaFin AND i.id = :idInstructor GROUP BY c.jugador.id ORDER BY total DESC")
+        List<Object[]> getTopPendientes(LocalDate fechaInicio, LocalDate fechaFin, Long idInstructor);
+
+        
+
 }
