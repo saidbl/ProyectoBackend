@@ -12,5 +12,6 @@ public interface CheckinRutinaService {
     public List<CheckinRutina> listByDeportistaId(Long id);
     public CumplimientoRutinasDTO getCumplimiento(Long id, String rango);
     public ResumenCumplimientoDTO obtenerCumplimientoRutinas(Long id);
+    public List<CheckinRutina> listByDeportistaIdIncompleta(Long id);
 
 }

@@ -5,10 +5,12 @@ import java.util.List;
 import mx.com.gm.domain.Deportista;
 import mx.com.gm.dto.DeportistaRendimiento;
 import mx.com.gm.dto.ResponseAPI;
+import mx.com.gm.dto.ResumenAtletasDTO;
 import mx.com.gm.service.DeportistaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,5 +37,11 @@ public class DeportistaController {
     @GetMapping("/deportistas/CheckRendObj")
     public List<DeportistaRendimiento> listCheckRenObk(@RequestParam Long id){
         return dservice.listByIdInstructorObjRendCheck(id);
+    }
+    @GetMapping("/deportistas/resumen/{instructorId}")
+    public ResponseEntity<ResumenAtletasDTO> getResumenAtletas(
+        @PathVariable Long instructorId
+    ) {
+        return ResponseEntity.ok(dservice.obtenerResumenAtletas(instructorId));
     }
 }

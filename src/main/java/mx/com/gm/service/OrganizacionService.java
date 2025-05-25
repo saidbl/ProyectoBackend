@@ -10,4 +10,5 @@ public interface OrganizacionService {
     public ResponseAPI login(ResponseAPI login);
     public Organizacion getbyId(Long id);
     public Organizacion update(Long id, OrganizacionDTO odto);
+    public List<Organizacion> listByDeporte (Long id);
 }

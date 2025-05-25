@@ -7,15 +7,16 @@ import mx.com.gm.dao.DeportistaDao;
 import mx.com.gm.dao.MedicionFisicaDao;
 import mx.com.gm.dao.ObjetivoRendimientoDao;
 import mx.com.gm.dao.RegistroRendimientoDao;
-import mx.com.gm.dao.RutinaDao;
 import mx.com.gm.domain.Deportista;
 import mx.com.gm.domain.MedicionFisica;
 import mx.com.gm.domain.ObjetivoRendimiento;
 import mx.com.gm.domain.RegistroRendimiento;
 import mx.com.gm.dto.DeportistaRendimiento;
 import mx.com.gm.dto.EvolucionFisicaDTO;
+import mx.com.gm.dto.PosicionGeneroDTO;
 import mx.com.gm.dto.ProgresoObjetivoDTO;
 import mx.com.gm.dto.ResponseAPI;
+import mx.com.gm.dto.ResumenAtletasDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -70,6 +71,9 @@ public class DeportistaServiceImpl implements DeportistaService{
             response.setNombre(user.getNombre());
             response.setExpirationTime("24Hrs");
             response.setMessage("Acceso Exitoso");
+            response.setNombre(user.getNombre());
+            response.setApellido(user.getApellido());
+            response.setFotoPerfil(user.getFotoPerfil());
             response.setIdDeporte(user.getDeporte().getId());
             response.setPosicion(user.getPosicion().getNombre());
         }catch(Exception e){
@@ -131,6 +135,41 @@ public class DeportistaServiceImpl implements DeportistaService{
         if (imc < 30) return "Sobrepeso";
         return "Obesidad";
     }
+     
+    public ResumenAtletasDTO obtenerResumenAtletas(Long instructorId) {
+    long masculinos = ddao.countMasculinosByInstructorId(instructorId);
+    long femeninos = ddao.countFemeninosByInstructorId(instructorId);
+    double edadGeneral = Optional.ofNullable(ddao.getEdadPromedioGeneral(instructorId))
+                              .orElse(0.0);
+    double edadHombres = Optional.ofNullable(ddao.getEdadPromedioHombres(instructorId))
+                              .orElse(0.0);
+    double edadMujeres = Optional.ofNullable(ddao.getEdadPromedioMujeres(instructorId))
+                              .orElse(0.0);
+    Map<String, PosicionGeneroDTO> distribucionMap = new LinkedHashMap<>();
+    List<Object[]> rawData = ddao.getDistribucionPosicionGenero(instructorId);
+    for (Object[] fila : rawData) {
+        String posicion = (String) fila[0];
+        String genero = (String) fila[1];
+        Long cantidad = (Long) fila[2];
+        
+        PosicionGeneroDTO dto = distribucionMap.getOrDefault(posicion, new PosicionGeneroDTO(posicion, 0L, 0L));
+        if ("Masculino".equals(genero)) {
+            dto = new PosicionGeneroDTO(posicion, cantidad, dto.getMujeres());
+        } else {
+            dto = new PosicionGeneroDTO(posicion, dto.getHombres(), cantidad);
+        }
+        distribucionMap.put(posicion, dto);
+    }
+    
+    return new ResumenAtletasDTO(
+        masculinos,
+        femeninos,
+        edadGeneral,
+        edadHombres,
+        edadMujeres,
+        new ArrayList<>(distribucionMap.values())
+    );
+}
     
     
 }

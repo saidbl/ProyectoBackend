@@ -13,6 +13,9 @@ public interface CheckinRutinaDao  extends JpaRepository<CheckinRutina,Integer>{
     @Query("SELECT c FROM CheckinRutina c WHERE c.jugador.id = :idJugador AND c.estado = 'COMPLETADA' ORDER BY c.fecha DESC, c.hora DESC")
     List<CheckinRutina> findByDeportistaIdAndEstado(@Param("idJugador") Long deportistaId);
     
+    @Query("SELECT c FROM CheckinRutina c WHERE c.jugador.id = :idJugador AND c.estado = 'INCOMPLETA' ORDER BY c.fecha DESC, c.hora DESC")
+    List<CheckinRutina> findByDeportistaIdAndEstadoIncompleta(@Param("idJugador") Long deportistaId);
+    
     @Query("SELECT COUNT(c) FROM CheckinRutina c WHERE c.jugador.id = :idJugador ORDER BY c.fecha DESC, c.hora DESC")
     long countByDeportistaId(@Param("idJugador") Long deportistaId);
     @Query("SELECT COUNT(c) FROM CheckinRutina c WHERE c.jugador.id = :idJugador AND c.estado = 'COMPLETADA' ORDER BY c.fecha DESC, c.hora DESC")

@@ -68,6 +68,9 @@ public class Deportista implements Serializable, UserDetails{
     @ManyToOne
     @JoinColumn(name = "id_posicion", nullable = false)
     private Posicion posicion;
+    
+    @Column(name = "foto_perfil")
+    private String fotoPerfil;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

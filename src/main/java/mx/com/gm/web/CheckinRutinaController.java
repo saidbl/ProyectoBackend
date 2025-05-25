@@ -34,6 +34,10 @@ public class CheckinRutinaController {
         System.out.println(id);
         return crservice.listByDeportistaId(id);
     }
+    @GetMapping("/checkin/incompletadas/{id}")
+    public List<CheckinRutina> listIncompletas (@PathVariable Long id){
+        return crservice.listByDeportistaIdIncompleta(id);
+    }
     
      @GetMapping("/cumplimiento/{deportistaId}")
     public ResponseEntity<?> getCumplimientoRutinas(

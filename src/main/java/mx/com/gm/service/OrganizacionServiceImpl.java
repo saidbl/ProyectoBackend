@@ -78,5 +78,10 @@ public class OrganizacionServiceImpl implements OrganizacionService{
         oExistente.setTipo(odto.getTipo());
         return odao.save(oExistente);
     }
+
+    @Override
+    public List<Organizacion> listByDeporte(Long id) {
+        return odao.findByDeporteId(id);
+    }
     }
     

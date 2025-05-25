@@ -37,6 +37,8 @@ public class SecurityConfig {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(request -> request
+                        .requestMatchers("/ws/**").permitAll()
+                        .requestMatchers("/chat.send/**").permitAll()
                         .requestMatchers("/auth/**", "/public/**").permitAll()
                         .requestMatchers("/auth/login/deportista/**").permitAll()
                         .requestMatchers("/auth/login/organizacion/**").permitAll()
@@ -76,6 +78,8 @@ public class SecurityConfig {
                         .requestMatchers("/desasociar/**").hasAnyAuthority("instructor")
                         .requestMatchers("/instructor").hasAnyAuthority("instructor")
                         .requestMatchers("/estadisticasInstructor/**").hasAnyAuthority("instructor")
+                        .requestMatchers("/usuario/**").permitAll()
+                        .requestMatchers("/mensajes/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

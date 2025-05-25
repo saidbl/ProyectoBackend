@@ -36,4 +36,8 @@ public class OrganizacionController {
         Organizacion orgActualizado = oservice.update(id, oDTO);
         return ResponseEntity.ok(orgActualizado);
     }
+    @GetMapping("/listarOrganizacion/{id}")
+    public List<Organizacion> listByDeporte(@PathVariable Long id){
+        return oservice.listByDeporte(id);
+    }
 }

@@ -136,5 +136,10 @@ private String obtenerNombreDia(int dayOfWeek) {
         default -> "";
     };
     }
+
+    @Override
+    public List<CheckinRutina> listByDeportistaIdIncompleta(Long id) {
+        return crdao.findByDeportistaIdAndEstadoIncompleta(id);
+    }
     }
 
