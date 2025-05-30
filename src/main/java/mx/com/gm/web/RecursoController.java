@@ -63,6 +63,7 @@ public class RecursoController {
         recursoService.eliminarRecurso(id);
         ResponseAPI response = new ResponseAPI();
         response.setMessage("Eliminado correctamente");
+        response.setSuccess(true);
         return ResponseEntity.ok(response);
     }
 }
