@@ -17,4 +17,6 @@ public interface MedicionFisicaDao extends JpaRepository<MedicionFisica,Long>{
             @Param("fechaFin") LocalDate fechaFin
     );
     Optional<MedicionFisica> findFirstByDeportistaIdOrderByFechaDesc(Long deportistaId);
+    
+    List<MedicionFisica> findByDeportistaId(@Param("deportistaId") Long deportistaId);
 }

@@ -1,5 +1,6 @@
 package mx.com.gm.service;
 
+import java.io.IOException;
 import java.util.List;
 import mx.com.gm.dao.DeportistaDao;
 import mx.com.gm.dao.RegistroRendimientoDao;
@@ -40,6 +41,11 @@ public class RegistroRendimientoServiceImpl implements RegistroRendimientoServic
         registro.setMetrica(m);
         registro.setValor(rdto.getValor());
         return rrdao.save(registro);
+    }
+
+    @Override
+    public void delete(Long id) throws IOException {
+       rrdao.deleteById(id);
     }
     
 }

@@ -1,32 +1,41 @@
 package mx.com.gm.service;
+import jakarta.persistence.EntityNotFoundException;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 import mx.com.gm.dao.CheckinRutinaDao;
+import mx.com.gm.dao.DeporteDao;
 import mx.com.gm.dao.DeportistaDao;
 import mx.com.gm.dao.MedicionFisicaDao;
 import mx.com.gm.dao.ObjetivoRendimientoDao;
 import mx.com.gm.dao.RegistroRendimientoDao;
+import mx.com.gm.domain.Deporte;
 import mx.com.gm.domain.Deportista;
 import mx.com.gm.domain.MedicionFisica;
 import mx.com.gm.domain.ObjetivoRendimiento;
 import mx.com.gm.domain.RegistroRendimiento;
+import mx.com.gm.dto.DeportistaDTO;
 import mx.com.gm.dto.DeportistaRendimiento;
 import mx.com.gm.dto.EvolucionFisicaDTO;
 import mx.com.gm.dto.PosicionGeneroDTO;
 import mx.com.gm.dto.ProgresoObjetivoDTO;
 import mx.com.gm.dto.ResponseAPI;
 import mx.com.gm.dto.ResumenAtletasDTO;
+import mx.com.gm.dto.TipoRecurso;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class DeportistaServiceImpl implements DeportistaService{
     @Autowired
     DeportistaDao ddao;
+    @Autowired
+    DeporteDao depdao;
     @Autowired 
     RegistroRendimientoDao rrdao;
     @Autowired
@@ -37,6 +46,8 @@ public class DeportistaServiceImpl implements DeportistaService{
     MedicionFisicaDao mfdao;
     @Autowired 
     ObjetivoRendimientoServiceImpl ori;
+    @Autowired
+    FileStorageService fsservice;
 
     @Autowired
     private AuthenticationManager am;
@@ -67,6 +78,7 @@ public class DeportistaServiceImpl implements DeportistaService{
             response.setId(user.getId());
             response.setRol(user.getRol());
             response.setRefreshToken(refreshToken);
+            response.setIdInstructor(user.getInstructor().getId());
             response.setApellido(user.getApellido());
             response.setNombre(user.getNombre());
             response.setExpirationTime("24Hrs");
@@ -136,6 +148,7 @@ public class DeportistaServiceImpl implements DeportistaService{
         return "Obesidad";
     }
      
+    @Override
     public ResumenAtletasDTO obtenerResumenAtletas(Long instructorId) {
     long masculinos = ddao.countMasculinosByInstructorId(instructorId);
     long femeninos = ddao.countFemeninosByInstructorId(instructorId);
@@ -170,6 +183,42 @@ public class DeportistaServiceImpl implements DeportistaService{
         new ArrayList<>(distribucionMap.values())
     );
 }
+
+    @Override
+    public Deportista getById(Long id) {
+        Deportista d = ddao.findById(id)
+               .orElseThrow(() -> new EntityNotFoundException("Instructor no encontrado"));
+       return d;
+    }
+
+    @Override
+    public Deportista update(Long id, DeportistaDTO idto, MultipartFile file) throws IOException {
+        Deportista d = ddao.findById(id)
+               .orElseThrow(() -> new EntityNotFoundException("Instructor no encontrado"));
+       Deporte dep = depdao.findById(idto.getIdDeporte())
+               .orElseThrow(() -> new EntityNotFoundException("Instructor no encontrado"));
+       if (file != null && !file.isEmpty()) {
+            TipoRecurso tipo = TipoRecurso.fromContentType(file.getContentType());
+            String nombreArchivo = UUID.randomUUID() + "_" + file.getOriginalFilename();
+            String rutaArchivo = fsservice.guardarArchivo(
+            file.getInputStream(), 
+            tipo.getNombreCarpeta(), 
+            nombreArchivo
+        );
+            fsservice.eliminarArchivo(d.getFotoPerfil());
+            d.setFotoPerfil(rutaArchivo);
+        }
+       d.setActivo(idto.getActivo());
+       d.setApellido(idto.getApellido());
+       d.setDeporte(dep);
+       d.setDireccion(idto.getDireccion());
+       d.setEmail(idto.getEmail());
+       d.setFechaNacimiento(idto.getFechaNacimiento());
+       d.setFechaRegistro(idto.getFechaRegistro());
+       d.setNombre(idto.getNombre());
+       d.setTelefono(idto.getTelefono());
+       return ddao.save(d);
+    }
     
     
 }

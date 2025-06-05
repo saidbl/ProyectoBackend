@@ -1,5 +1,6 @@
 package mx.com.gm.service;
 
+import java.io.IOException;
 import java.util.List;
 import mx.com.gm.dao.DeporteDao;
 import mx.com.gm.dao.DeportistaDao;
@@ -40,6 +41,11 @@ public class TipoMetricaServiceImpl implements TipoMetricaService{
     @Override
     public List<TipoMetrica> list(Long id) {
         return tmdao.findByDeportistaId(id);
+    }
+
+    @Override
+    public void delete(Long id) throws IOException {
+       tmdao.deleteById(id);
     }
     
 }

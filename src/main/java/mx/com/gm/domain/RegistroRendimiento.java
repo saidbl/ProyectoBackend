@@ -21,7 +21,6 @@ public class RegistroRendimiento implements Serializable{
     private Deportista deportista;
     
     @ManyToOne
-    @JsonIgnore
     @JoinColumn(name = "id_metrica", nullable = false)
     private TipoMetrica metrica;
     

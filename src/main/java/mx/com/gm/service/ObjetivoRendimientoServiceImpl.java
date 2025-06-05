@@ -1,5 +1,6 @@
 package mx.com.gm.service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,10 +62,13 @@ public class ObjetivoRendimientoServiceImpl implements ObjetivoRendimientoServic
 
         for (ObjetivoRendimiento objetivo : objetivos) {
             ProgresoObjetivoDTO dto = new ProgresoObjetivoDTO();
+            dto.setId(objetivo.getId());
             dto.setNombreObjetivo(objetivo.getMetrica().getNombre());
             dto.setUnidad(objetivo.getMetrica().getUnidad());
             dto.setValorObjetivo(objetivo.getValorObjetivo());
             dto.setFechaObjetivo(objetivo.getFechaObjetivo());
+            dto.setCompletado(objetivo.isCompletado());
+            System.out.println(dto);
 
             Optional<RegistroRendimiento> ultimoRegistro = rrdao.findUltimoRegistro(
                     deportistaId, objetivo.getMetrica().getId());
@@ -78,13 +82,25 @@ public class ObjetivoRendimientoServiceImpl implements ObjetivoRendimientoServic
             } else {
                 dto.setValorActual(0.0);
                 dto.setPorcentajeCompletado(0);
-                dto.setCompletado(false);
             }
 
             resultados.add(dto);
         }
 
         return resultados;
+    }
+
+    @Override
+    public ObjetivoRendimiento completado(Long id) {
+        ObjetivoRendimiento obj = ordao.findById(id)
+                 .orElseThrow(() -> new RuntimeException("Objetivo no encontrada"));
+        obj.setCompletado(true);
+        return ordao.save(obj);
+    }
+
+    @Override
+    public void delete(Long id) throws IOException {
+        ordao.deleteById(id);
     }
     }
     

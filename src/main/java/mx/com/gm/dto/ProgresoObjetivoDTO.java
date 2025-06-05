@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class ProgresoObjetivoDTO {
+    private Long id;
     private String nombreObjetivo;
     private String unidad;
     private Double valorActual;

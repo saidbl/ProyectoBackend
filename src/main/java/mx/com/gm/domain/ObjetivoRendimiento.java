@@ -20,7 +20,6 @@ public class ObjetivoRendimiento implements Serializable{
     private Deportista deportista;
     @ManyToOne
     @JoinColumn(name = "id_metrica", nullable = false)
-    @JsonIgnore
     private TipoMetrica metrica;
     private Double valorObjetivo;
     private LocalDate fechaObjetivo;

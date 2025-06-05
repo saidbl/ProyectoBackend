@@ -30,6 +30,7 @@ public class ResponseAPI {
     private Organizacion org;
     private List<Organizacion> orgs;
     private Long idDeporte;
+    private Long idInstructor;
     private boolean success;
     private String nombre;
     private String apellido;

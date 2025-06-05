@@ -13,4 +13,5 @@ public interface InstructorService {
     public ResponseAPI login(ResponseAPI login);
     public Instructor getById(Long id);
     public Instructor update(Long id, InstructorDTO idto, MultipartFile file)throws IOException;
+     public Instructor listByIdDeportista(Long id);
 }

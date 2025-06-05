@@ -2,10 +2,14 @@ package mx.com.gm.service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import mx.com.gm.dao.DeportistaDao;
 import mx.com.gm.dao.MedicionFisicaDao;
+import mx.com.gm.domain.Deportista;
 import mx.com.gm.domain.MedicionFisica;
 import mx.com.gm.dto.EvolucionFisicaDTO;
+import mx.com.gm.dto.MedicionFisicaDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +18,9 @@ public class MedicionFisicaServiceImpl implements MedicionFisicaService{
     
     @Autowired 
     MedicionFisicaDao mfdao;
+    
+    @Autowired 
+    DeportistaDao ddao;
 
     @Override
     public List<EvolucionFisicaDTO> getEvolucionFisica(Long id, String rango) {
@@ -53,4 +60,34 @@ public class MedicionFisicaServiceImpl implements MedicionFisicaService{
         if (imc < 30) return "Sobrepeso";
         return "Obesidad";
     }
+
+    @Override
+    public MedicionFisica add(MedicionFisicaDTO mfdto) {
+        MedicionFisica mr = new MedicionFisica();
+        Deportista d = ddao.findById(mfdto.getIdDeportista())
+                 .orElseThrow(() -> new RuntimeException("Rutina no encontrada"));
+        LocalDate f = LocalDate.now();
+        mr.setCircunferenciaBrazo(mfdto.getCircunferenciaBrazo());
+        mr.setCircunferenciaCadera(mfdto.getCircunferenciaCadera());
+        mr.setCircunferenciaCintura(mfdto.getCircunferenciaCintura());
+        mr.setDeportista(d);
+        mr.setEstatura(mfdto.getEstatura());
+        mr.setFecha(f);
+        mr.setFrecuenciaCardiacaReposo(mfdto.getFrecuenciaCardiacaReposo());
+        mr.setMasaMuscular(mfdto.getMasaMuscular());
+        mr.setNotas(mfdto.getNotas());
+        mr.setPeso(mfdto.getPeso());
+        mr.setPorcentajeGrasa(mfdto.getPorcentajeGrasa());
+        mr.setPresionArterial(mfdto.getPresionArterial());
+        return mfdao.save(mr);
+    }
+
+    @Override
+    public List<MedicionFisica> list(Long id) {
+        return mfdao.findByDeportistaId(id);
+    }
+@Override
+public Optional<MedicionFisica> getLastest(Long id) {
+    return mfdao.findFirstByDeportistaIdOrderByFechaDesc(id);
 }
+    }

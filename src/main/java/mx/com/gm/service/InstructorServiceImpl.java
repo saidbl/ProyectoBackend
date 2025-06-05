@@ -6,8 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import mx.com.gm.dao.DeporteDao;
+import mx.com.gm.dao.DeportistaDao;
 import mx.com.gm.dao.InstructorDao;
 import mx.com.gm.domain.Deporte;
+import mx.com.gm.domain.Deportista;
 import mx.com.gm.domain.Instructor;
 import mx.com.gm.dto.InstructorDTO;
 import mx.com.gm.dto.ResponseAPI;
@@ -32,6 +34,9 @@ public class InstructorServiceImpl implements InstructorService{
     
     @Autowired 
     private FileStorageService fsservice;
+    
+    @Autowired
+    private DeportistaDao depdao;
     
     @Autowired
     private JWTUtils jwt;
@@ -104,6 +109,13 @@ public class InstructorServiceImpl implements InstructorService{
        i.setNombre(idto.getNombre());
        i.setTelefono(idto.getTelefono());
        return idao.save(i);
+    }
+
+    @Override
+    public Instructor listByIdDeportista(Long id) {
+        Deportista deportista = depdao.findById(id)
+            .orElseThrow(() -> new RuntimeException("Deportista no encontrado"));
+        return deportista.getInstructor();
     }
     
 }

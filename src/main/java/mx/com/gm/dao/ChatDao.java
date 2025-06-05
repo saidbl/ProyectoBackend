@@ -40,6 +40,8 @@ List<Long> findEquipoIdsByDeportistaId(@Param("deportistaId") Long deportistaId)
 
     List<Chat> findByOrganizacionId(Long organizacionId);
     
+    List<Chat> findByDeportistaId(Long deportistaId);
+    
     @Query("SELECT c FROM Chat c WHERE " +
        "(c.instructor.id = :instructorId AND c.deportista.id = :deportistaId AND c.tipo = :tipo) " +
        "OR (c.equipo.id = :equipoId AND c.tipo = :tipo)"+

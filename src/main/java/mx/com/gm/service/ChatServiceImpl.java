@@ -98,6 +98,8 @@ public class ChatServiceImpl implements ChatService{
     }
     @Override
     public List<Chat> obtenerChatsUsuario(Long userId, String tipoUsuario) {
+        System.out.println(userId );
+        System.out.println(tipoUsuario);
         return switch (tipoUsuario.toUpperCase()) {
             case "INSTRUCTOR" -> obtenerChatsInstructor(userId);
             case "DEPORTISTA" -> obtenerChatsDeportista(userId);
@@ -123,12 +125,9 @@ public class ChatServiceImpl implements ChatService{
 
     private List<Chat> obtenerChatsDeportista(Long deportistaId) {
          List<Chat> chats = new ArrayList<>();
-    Deportista deportista = ddao.findById(deportistaId)
-        .orElseThrow(() -> new RuntimeException("Deportista no encontrado"));
 
-    chats.addAll(chdao.findByDeportistaIdOrInstructorId(
-        deportistaId, 
-        deportista.getInstructor().getId()
+    chats.addAll(chdao.findByDeportistaId(
+        deportistaId 
     ));
 
     List<Long> equipoIds = chdao.findEquipoIdsByDeportistaId(deportistaId);
@@ -136,8 +135,9 @@ public class ChatServiceImpl implements ChatService{
     if (!equipoIds.isEmpty()) {
         chats.addAll(chdao.findByEquipoIds(equipoIds));
     }
-
+        System.out.println(chats.size());
     return chats.stream().distinct().toList();
+    
     }
 
     private List<Chat> obtenerChatsOrganizacion(Long organizacionId) {

@@ -29,6 +29,10 @@ public class MedicionFisica implements Serializable{
     private Double circunferenciaBrazo; 
     private Double circunferenciaCintura; 
     private Double circunferenciaCadera;
+    private String presionArterial;
+    private Long frecuenciaCardiacaReposo;
+    private String notas;
+    
     @PrePersist
     @PreUpdate
     private void calcularIMC() {
