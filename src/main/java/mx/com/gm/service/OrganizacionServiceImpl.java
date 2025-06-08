@@ -52,6 +52,8 @@ public class OrganizacionServiceImpl implements OrganizacionService{
             response.setRefreshToken(refreshToken);
             response.setExpirationTime("24Hrs");
             response.setMessage("Acceso Exitoso");
+            response.setNombre(user.getNombre());
+            response.setFotoPerfil(user.getImagen());
             response.setIdDeporte(user.getDeporte().getId());
         }catch(Exception e){
             response.setStatusCode(500);

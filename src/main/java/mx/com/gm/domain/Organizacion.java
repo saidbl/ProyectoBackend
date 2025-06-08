@@ -42,6 +42,9 @@ public class Organizacion implements Serializable, UserDetails{
     @ManyToOne
     @JoinColumn(name = "id_deporte", nullable = false)
     private Deporte deporte;
+    
+    @Column(nullable = false)
+    private String imagen;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

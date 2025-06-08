@@ -2,6 +2,7 @@ package mx.com.gm.web;
 
 import java.util.List;
 import mx.com.gm.domain.Equipo;
+import mx.com.gm.domain.Evento;
 import mx.com.gm.domain.EventoEquipo;
 import mx.com.gm.dto.EventoEquipoDTO;
 import mx.com.gm.service.EventoEquipoService;
@@ -32,5 +33,9 @@ public class EventoEquipoController {
     @GetMapping("/eventosEquipo/listar/{id}")
     public List<Equipo> listarEquiposEvento(@PathVariable Long id){
         return eeservice.listarEquiposEvento(id);
+    }
+    @GetMapping("/equiposEvento/listar/{id}")
+    public List<Evento> listarEventosEquipo(@PathVariable Long id){
+        return eeservice.listarEventosEquipo(id);
     }
 }

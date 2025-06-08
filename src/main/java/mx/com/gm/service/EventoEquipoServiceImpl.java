@@ -51,5 +51,10 @@ public class EventoEquipoServiceImpl implements EventoEquipoService{
     public List<Equipo> listarEquiposEvento(Long idEvento) {
         return eedao.findEquiposByEventoId(idEvento);
     }
+
+    @Override
+    public List<Evento> listarEventosEquipo(Long idEquipo) {
+        return eedao.findEventosByEquipoId(idEquipo);
+    }
     
 }

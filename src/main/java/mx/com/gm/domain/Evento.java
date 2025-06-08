@@ -31,7 +31,7 @@ public class Evento implements Serializable{
     @Column(name = "fecha", nullable = false)
     private LocalDate fecha;
     
-    @Column(name = "fecha_fin", nullable = false)
+    @Column(name = "fecha_fin")
     private LocalDate fechaFin;
 
     @Column(name = "descripcion", columnDefinition = "TEXT")
