@@ -22,5 +22,7 @@ public interface MensajeDao extends JpaRepository<Mensaje,Long>{
     @Modifying
     @Query("UPDATE Mensaje m SET m.leido = true WHERE m.chat.id = :chatId AND m.leido = false AND m.remitenteId != :usuarioId")
     void marcarComoLeido(@Param("chatId") Long chatId, @Param("usuarioId") Long usuarioId);
-    
+    @Modifying
+    @Query("UPDATE Mensaje m SET m.leido = true WHERE m.chat.id = :chatId AND m.leido = false")
+    void marcarMensajesComoLeidosEnChat(@Param("chatId") Long chatId);
 }

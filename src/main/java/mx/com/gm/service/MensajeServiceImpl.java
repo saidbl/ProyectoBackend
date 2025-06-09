@@ -1,6 +1,8 @@
 
 package mx.com.gm.service;
 
+import jakarta.transaction.Transactional;
+import java.util.List;
 import mx.com.gm.dao.MensajeDao;
 import mx.com.gm.domain.Chat;
 import mx.com.gm.domain.Mensaje;
@@ -43,16 +45,29 @@ public class MensajeServiceImpl implements MensajeService{
         mensaje.setContenido(request.getContenido());
         mensaje.setRemitenteTipo(request.getRemitenteTipo());
         mensaje.setRemitenteId(request.getRemitenteId());
+        mensaje.setLeido(false);
         Mensaje mensajeGuardado = mdao.save(mensaje);
+        MensajeDTO dto = convertirAResponse(mensajeGuardado);
+
+    messagingTemplate.convertAndSend("/topic/chat/" + chat.getId(), dto);
+
+    List<Long> participantes = pservice.obtenerIdsParticipantes(chat);
+    for (Long participanteId : participantes) {
+        if (!participanteId.equals(request.getRemitenteId())) {
+            messagingTemplate.convertAndSend("/topic/notificaciones/" + participanteId, dto);
+        }
+    }
         
         messagingTemplate.convertAndSend("/topic/chat/" + chat.getId(), convertirAResponse(mensajeGuardado));
         return mensajeGuardado;
     }
 
     @Override
-    public void marcarMensajesComoLeidos(Long chatId, Long usuarioId) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+        @Transactional
+public void marcarMensajesComoLeidos(Long chatId, Long usuarioId) {
+    mdao.marcarMensajesComoLeidosEnChat(chatId);
+    messagingTemplate.convertAndSend("/topic/chat/" + chatId + "/read", new MensajeDTO(chatId, usuarioId));
+}
     
     private MensajeDTO convertirAResponse(Mensaje mensaje) {
         return new MensajeDTO(
@@ -64,5 +79,6 @@ public class MensajeServiceImpl implements MensajeService{
             mensaje.isLeido()
         );
     }
+
    
 }

@@ -117,5 +117,40 @@ public class InstructorServiceImpl implements InstructorService{
             .orElseThrow(() -> new RuntimeException("Deportista no encontrado"));
         return deportista.getInstructor();
     }
+
+    @Override
+    public List<Instructor> listByDeporte(Long id) {
+        return idao.findByDeporteId(id);
+    }
+
+    @Override
+    public Instructor add(InstructorDTO idto, MultipartFile file) throws IOException {
+        TipoRecurso tipo = TipoRecurso.fromContentType(file.getContentType());
+        if (tipo == null) {
+            throw new IllegalArgumentException("Tipo de archivo no soportado: " + file.getContentType());
+        }
+        String nombreArchivo = UUID.randomUUID() + "_" + file.getOriginalFilename();
+        String rutaArchivo = fsservice.guardarArchivo(
+            file.getInputStream(), 
+            tipo.getNombreCarpeta(), 
+            nombreArchivo
+        );
+       Instructor i = new Instructor();
+       Deporte d = ddao.findById(idto.getIdDeporte())
+               .orElseThrow(() -> new RuntimeException("Rutina no encontrada"));
+       i.setApellido(idto.getApellido());
+       i.setDeporte(d);
+       i.setEmail(idto.getEmail());
+       i.setEspecialidad(idto.getEspecialidad());
+       i.setExperiencia(idto.getExperiencia());
+       i.setFotoPerfil(rutaArchivo);
+       i.setNombre(idto.getNombre());
+       String hashedPassword = pe.encode(idto.getPassword());
+       i.setPassword(hashedPassword);
+       i.setRol(idto.getRol());
+       i.setTelefono(idto.getTelefono());
+       Instructor ins = idao.save(i);
+       return ins;
+    }
     
 }

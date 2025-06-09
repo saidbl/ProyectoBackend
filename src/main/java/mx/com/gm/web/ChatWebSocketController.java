@@ -1,5 +1,4 @@
 package mx.com.gm.web;
-
 import mx.com.gm.domain.Mensaje;
 import mx.com.gm.domain.MensajeRequest;
 import mx.com.gm.dto.MensajeDTO;
@@ -20,6 +19,7 @@ public class ChatWebSocketController {
     private ChatService chservice;
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
+
     
     @MessageMapping("/chat/{chatId}/send")
     public void handleMessage(@Payload MensajeRequest request, 
@@ -30,11 +30,20 @@ public class ChatWebSocketController {
     @MessageMapping("/chat.send") 
     public void enviarMensaje(@Payload MensajeDTO mensajeDTO) {
         Mensaje mensajeGuardado = chservice.guardarMensajeDesdeDTO(mensajeDTO);
-        messagingTemplate.convertAndSendToUser(
-            mensajeDTO.getIdChat().toString(), 
-            "/queue/messages", 
-            mensajeGuardado
-        );
+        MensajeDTO dto = convertirADTO(mensajeGuardado); 
+         messagingTemplate.convertAndSend("/topic/chats/updates", dto);
+          messagingTemplate.convertAndSend("/topic/mensajes", "nuevo");
+    }
+    public MensajeDTO convertirADTO(Mensaje mensaje){
+        MensajeDTO dto = new MensajeDTO();
+        dto.setContenido(mensaje.getContenido());
+        dto.setFechaEnvio(mensaje.getFechaEnvio());
+        dto.setId(mensaje.getId());
+        dto.setIdChat(mensaje.getChat().getId());
+        dto.setLeido(mensaje.isLeido());
+        dto.setRemitenteId(mensaje.getRemitenteId());
+        dto.setRemitenteTipo(mensaje.getRemitenteTipo());
+        return dto;
     }
             
 }

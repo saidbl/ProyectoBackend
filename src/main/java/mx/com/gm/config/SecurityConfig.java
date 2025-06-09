@@ -38,6 +38,7 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/ws/**").permitAll()
+                        .requestMatchers("/topic/**").permitAll()
                         .requestMatchers("/chat.send/**").permitAll()
                         .requestMatchers("/auth/**", "/public/**").permitAll()
                         .requestMatchers("/auth/login/deportista/**").permitAll()
@@ -87,6 +88,7 @@ public class SecurityConfig {
                         .requestMatchers("/equiposEvento/**").hasAnyAuthority("deportista")
                         .requestMatchers("/usuario/**").permitAll()
                         .requestMatchers("/mensajes/**").permitAll()
+                        .requestMatchers("/instructorOrg/**").hasAnyAuthority("organizacion")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

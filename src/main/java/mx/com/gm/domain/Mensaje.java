@@ -24,5 +24,5 @@ public class Mensaje implements Serializable{
     private Long remitenteId;
 
     private LocalDateTime fechaEnvio;
-    private boolean leido;
+    private boolean leido= false;
 }

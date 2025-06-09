@@ -1,11 +1,13 @@
 package mx.com.gm.web;
 
+import java.io.IOException;
 import java.util.List;
 import mx.com.gm.domain.Instructor;
 import mx.com.gm.dto.InstructorDTO;
 import mx.com.gm.dto.ResponseAPI;
 import mx.com.gm.service.InstructorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,5 +52,23 @@ public class InstructorController {
     public ResponseEntity<Instructor> list(@RequestParam Long id){
         System.out.println(id);
         return ResponseEntity.ok(iservice.listByIdDeportista(id));
+    }
+    @GetMapping("/instructorOrg/{id}")
+    public List<Instructor> getByDeporte (@PathVariable Long id){
+        return iservice.listByDeporte(id);
+    }
+    
+     @PostMapping("/instructorOrg/agregar")
+    public ResponseEntity<Instructor> createInstructor(
+            @RequestPart("instructor") InstructorDTO instructorDTO,
+            @RequestPart(value = "foto", required = false) MultipartFile file) {
+         try {
+        Instructor added= iservice.add(instructorDTO, file);
+        return ResponseEntity.ok(added);
+        }catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 }

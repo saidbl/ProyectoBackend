@@ -15,10 +15,6 @@ public class NotificacionService {
 
     public void notificarNuevoMensaje(Mensaje mensaje) {
         messagingTemplate.convertAndSend(
-            "/topic/chat/" + mensaje.getChat().getId(), 
-            mensaje
-        );
-        messagingTemplate.convertAndSend(
             "/topic/chats/updates",
             new ChatUpdateDTO(
                 mensaje.getChat().getId(),
@@ -28,6 +24,7 @@ public class NotificacionService {
                 mensaje.getRemitenteId()
             )
         );
+
     }
 
     public void notificarMensajeLeido(Long chatId, Long usuarioId) {

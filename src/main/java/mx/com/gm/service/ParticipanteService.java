@@ -1,8 +1,11 @@
 
 package mx.com.gm.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import mx.com.gm.dao.ChatParticipanteDao;
 import mx.com.gm.domain.Chat;
+import mx.com.gm.domain.ChatParticipante;
 import mx.com.gm.domain.RemitenteTipo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,5 +51,23 @@ public class ParticipanteService {
     private boolean validarChatOrganizacion(Chat chat, Long remitenteId, RemitenteTipo tipo) {
         return (tipo == RemitenteTipo.ORGANIZACION && remitenteId.equals(chat.getOrganizacion().getId()))
                 || (tipo == RemitenteTipo.INSTRUCTOR && remitenteId.equals(chat.getInstructor().getId()));
+    }
+    public List<Long> obtenerIdsParticipantes(Chat chat) {
+        List<Long> ids = new ArrayList<>();
+
+        if (chat.getDeportista() != null) {
+            ids.add(chat.getDeportista().getId());
+        }
+        if (chat.getInstructor() != null) {
+            ids.add(chat.getInstructor().getId());
+        }
+
+        if (chat.getParticipantes() != null) {
+            for (ChatParticipante cp : chat.getParticipantes()) {
+                ids.add(cp.getDeportista().getId());
+            }
+        }
+
+        return ids;
     }
 }
