@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 public interface DeportistaDao extends JpaRepository<Deportista,Long>{
     Optional<Deportista> findByEmail(String email);
     List<Deportista> findByInstructorId(Long idInstructor);
-    
+    boolean existsByEmail(String email);
     @Query("SELECT COUNT(d) FROM Deportista d WHERE d.instructor.id = :id AND d.genero = 'Masculino'")
     long countMasculinosByInstructorId(@Param("id") Long instructorId);
     

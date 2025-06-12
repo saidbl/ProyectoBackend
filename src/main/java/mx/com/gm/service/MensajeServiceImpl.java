@@ -50,13 +50,6 @@ public class MensajeServiceImpl implements MensajeService{
         MensajeDTO dto = convertirAResponse(mensajeGuardado);
 
     messagingTemplate.convertAndSend("/topic/chat/" + chat.getId(), dto);
-
-    List<Long> participantes = pservice.obtenerIdsParticipantes(chat);
-    for (Long participanteId : participantes) {
-        if (!participanteId.equals(request.getRemitenteId())) {
-            messagingTemplate.convertAndSend("/topic/notificaciones/" + participanteId, dto);
-        }
-    }
         
         messagingTemplate.convertAndSend("/topic/chat/" + chat.getId(), convertirAResponse(mensajeGuardado));
         return mensajeGuardado;

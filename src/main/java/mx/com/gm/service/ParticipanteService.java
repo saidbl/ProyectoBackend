@@ -2,7 +2,9 @@
 package mx.com.gm.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import mx.com.gm.dao.ChatParticipanteDao;
 import mx.com.gm.domain.Chat;
 import mx.com.gm.domain.ChatParticipante;
@@ -52,22 +54,32 @@ public class ParticipanteService {
         return (tipo == RemitenteTipo.ORGANIZACION && remitenteId.equals(chat.getOrganizacion().getId()))
                 || (tipo == RemitenteTipo.INSTRUCTOR && remitenteId.equals(chat.getInstructor().getId()));
     }
-    public List<Long> obtenerIdsParticipantes(Chat chat) {
-        List<Long> ids = new ArrayList<>();
+  public Map<Long, String> obtenerParticipantesConRol(Chat chat) {
+    Map<Long, String> participantes = new HashMap<>();
+      System.out.println(chat);
+      System.out.println(chat.getDeportista());
+    if (chat.getDeportista() != null) {
+        participantes.put(chat.getDeportista().getId(), "deportista");
+    }
+    if (chat.getInstructor() != null) {
+        participantes.put(chat.getInstructor().getId(), "instructor");
+    }
+    if(chat.getOrganizacion()!=null){
+        participantes.put(chat.getInstructor().getId(), "organizacion");
+    }
 
-        if (chat.getDeportista() != null) {
-            ids.add(chat.getDeportista().getId());
-        }
-        if (chat.getInstructor() != null) {
-            ids.add(chat.getInstructor().getId());
-        }
-
-        if (chat.getParticipantes() != null) {
-            for (ChatParticipante cp : chat.getParticipantes()) {
-                ids.add(cp.getDeportista().getId());
+    if (chat.getParticipantes() != null) {
+        for (ChatParticipante cp : chat.getParticipantes()) {
+            if (cp.getDeportista() != null) {
+                participantes.put(cp.getDeportista().getId(), "deportista");
+            }
+            if(cp.getChat().getInstructor()!= null){
+                participantes.put(cp.getChat().getInstructor().getId(),"instructor");
             }
         }
-
-        return ids;
     }
+
+    return participantes;
+}
+
 }

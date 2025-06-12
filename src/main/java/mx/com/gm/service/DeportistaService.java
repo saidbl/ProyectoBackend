@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.util.List;
 import mx.com.gm.domain.Deportista;
 import mx.com.gm.dto.DeportistaDTO;
+import mx.com.gm.dto.DeportistaMedicionDTO;
 import mx.com.gm.dto.DeportistaRendimiento;
 import mx.com.gm.dto.ResponseAPI;
 import mx.com.gm.dto.ResumenAtletasDTO;
@@ -15,6 +16,7 @@ public interface DeportistaService {
     public ResumenAtletasDTO obtenerResumenAtletas(Long instructorId) ;
     public Deportista getById(Long id);
     public Deportista update(Long id, DeportistaDTO idto, MultipartFile file)throws IOException;
+     public Deportista add(DeportistaMedicionDTO dto)throws IOException;
     
     
 }

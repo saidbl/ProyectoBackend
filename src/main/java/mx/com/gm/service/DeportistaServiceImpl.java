@@ -7,15 +7,20 @@ import java.util.stream.Collectors;
 import mx.com.gm.dao.CheckinRutinaDao;
 import mx.com.gm.dao.DeporteDao;
 import mx.com.gm.dao.DeportistaDao;
+import mx.com.gm.dao.InstructorDao;
 import mx.com.gm.dao.MedicionFisicaDao;
 import mx.com.gm.dao.ObjetivoRendimientoDao;
+import mx.com.gm.dao.PosicionDao;
 import mx.com.gm.dao.RegistroRendimientoDao;
 import mx.com.gm.domain.Deporte;
 import mx.com.gm.domain.Deportista;
+import mx.com.gm.domain.Instructor;
 import mx.com.gm.domain.MedicionFisica;
 import mx.com.gm.domain.ObjetivoRendimiento;
+import mx.com.gm.domain.Posicion;
 import mx.com.gm.domain.RegistroRendimiento;
 import mx.com.gm.dto.DeportistaDTO;
+import mx.com.gm.dto.DeportistaMedicionDTO;
 import mx.com.gm.dto.DeportistaRendimiento;
 import mx.com.gm.dto.EvolucionFisicaDTO;
 import mx.com.gm.dto.PosicionGeneroDTO;
@@ -36,6 +41,8 @@ public class DeportistaServiceImpl implements DeportistaService{
     DeportistaDao ddao;
     @Autowired
     DeporteDao depdao;
+    @Autowired
+    InstructorDao idao;
     @Autowired 
     RegistroRendimientoDao rrdao;
     @Autowired
@@ -48,6 +55,8 @@ public class DeportistaServiceImpl implements DeportistaService{
     ObjetivoRendimientoServiceImpl ori;
     @Autowired
     FileStorageService fsservice;
+    @Autowired
+    PosicionDao pdao;
 
     @Autowired
     private AuthenticationManager am;
@@ -218,6 +227,62 @@ public class DeportistaServiceImpl implements DeportistaService{
        d.setNombre(idto.getNombre());
        d.setTelefono(idto.getTelefono());
        return ddao.save(d);
+    }
+
+    @Override
+    public Deportista add(DeportistaMedicionDTO dto)throws IOException {
+        if (ddao.existsByEmail(dto.getEmail())) {
+            throw new IllegalArgumentException("El email ya está registrado");
+        }
+        TipoRecurso tipo = TipoRecurso.fromContentType(dto.getFotoPerfil().getContentType());
+        if (tipo == null) {
+            throw new IllegalArgumentException("Tipo de archivo no soportado: " + dto.getFotoPerfil().getContentType());
+        }
+        String nombreArchivo = UUID.randomUUID() + "_" + dto.getFotoPerfil().getOriginalFilename();
+        String rutaArchivo = fsservice.guardarArchivo(
+            dto.getFotoPerfil().getInputStream(), 
+            tipo.getNombreCarpeta(), 
+            nombreArchivo
+        );
+        Instructor i = idao.findById(dto.getIdInstructor())
+                .orElseThrow(() -> new RuntimeException("Rutina no encontrada"));
+        Deporte d = depdao.findById(dto.getIdDeporte())
+                .orElseThrow(() -> new RuntimeException("Rutina no encontrada"));
+        Posicion p = pdao.findById(dto.getIdPosicion())
+                .orElseThrow(() -> new RuntimeException("Rutina no encontrada"));
+        Deportista deportista = new Deportista();
+        deportista.setNombre(dto.getNombre());
+        deportista.setApellido(dto.getApellido());
+        deportista.setEmail(dto.getEmail());
+        deportista.setPassword(pe.encode(dto.getPassword()));
+        deportista.setDeporte(d);
+        deportista.setPosicion(p);
+        deportista.setInstructor(i);
+        deportista.setGenero(dto.getGenero());
+        deportista.setEstatura(dto.getMedicion().getEstatura());
+        deportista.setFechaNacimiento(dto.getFechaNacimiento());
+        deportista.setTelefono(dto.getTelefono());
+        deportista.setDireccion(dto.getDireccion());
+        deportista.setRol("deportista");
+        deportista.setFechaRegistro(new Date());
+        deportista.setActivo(true);
+        deportista.setFotoPerfil(rutaArchivo);
+        Deportista deportistaGuardado = ddao.save(deportista);
+        MedicionFisica medicion = new MedicionFisica();
+        medicion.setDeportista(deportistaGuardado);
+        medicion.setFecha(LocalDate.parse(dto.getMedicion().getFecha()));
+        medicion.setPeso(dto.getMedicion().getPeso());
+        medicion.setEstatura(dto.getMedicion().getEstatura());
+        medicion.setPorcentajeGrasa(dto.getMedicion().getPorcentajeGrasa());
+        medicion.setMasaMuscular(dto.getMedicion().getMasaMuscular());
+        medicion.setCircunferenciaBrazo(dto.getMedicion().getCircunferenciaBrazo());
+        medicion.setCircunferenciaCintura(dto.getMedicion().getCircunferenciaCintura());
+        medicion.setCircunferenciaCadera(dto.getMedicion().getCircunferenciaCadera());
+        medicion.setPresionArterial(dto.getMedicion().getPresionArterial());
+        medicion.setFrecuenciaCardiacaReposo(dto.getMedicion().getFrecuenciaCardiacaReposo());
+        medicion.setNotas(dto.getMedicion().getNotas());
+        mfdao.save(medicion);
+        return deportistaGuardado;
     }
     
     

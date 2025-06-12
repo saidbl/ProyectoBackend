@@ -2,6 +2,7 @@
 package mx.com.gm.service;
 
 import java.util.List;
+import java.util.Set;
 import mx.com.gm.domain.Chat;
 import mx.com.gm.domain.Mensaje;
 import mx.com.gm.dto.ChatRequest;

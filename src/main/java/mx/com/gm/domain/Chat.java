@@ -36,9 +36,7 @@ public class Chat implements Serializable{
     @ManyToOne
     private Equipo equipo;
 
-    @OneToMany(mappedBy = "chat")
-    @JsonManagedReference
-    @JsonIgnore
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "chat")
     private Set<ChatParticipante> participantes;
 
     private LocalDateTime fechaCreacion;
