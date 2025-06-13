@@ -2,7 +2,7 @@
 package mx.com.gm.service;
 
 import jakarta.transaction.Transactional;
-import java.util.List;
+import java.time.LocalDateTime;
 import mx.com.gm.dao.MensajeDao;
 import mx.com.gm.domain.Chat;
 import mx.com.gm.domain.Mensaje;
@@ -42,6 +42,7 @@ public class MensajeServiceImpl implements MensajeService{
         pservice.validarRemitenteEnChat(chat, request.getRemitenteId(), request.getRemitenteTipo());
         Mensaje mensaje = new Mensaje();
         mensaje.setChat(chat);
+        mensaje.setFechaEnvio(LocalDateTime.now());
         mensaje.setContenido(request.getContenido());
         mensaje.setRemitenteTipo(request.getRemitenteTipo());
         mensaje.setRemitenteId(request.getRemitenteId());

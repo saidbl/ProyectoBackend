@@ -1,4 +1,9 @@
 package mx.com.gm.web;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mx.com.gm.domain.Chat;
@@ -39,8 +44,8 @@ public class ChatWebSocketController {
         Chat chat = chservice.obtenerChatPorId(mensajeDTO.getIdChat());
         Mensaje mensajeGuardado = chservice.guardarMensajeDesdeDTO(mensajeDTO);
         MensajeDTO dto = convertirADTO(mensajeGuardado); 
-         messagingTemplate.convertAndSend("/topic/chats/updates", dto);
-          messagingTemplate.convertAndSend("/topic/mensajes", "nuevo");
+        messagingTemplate.convertAndSend("/topic/chats/updates", mensajeDTO);
+        messagingTemplate.convertAndSend("/topic/mensajes", "nuevo");
         messagingTemplate.convertAndSendToUser(
         mensajeDTO.getRemitenteId().toString(), 
         "/topic/notificaciones", 
