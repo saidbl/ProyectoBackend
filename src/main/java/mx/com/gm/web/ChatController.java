@@ -2,7 +2,6 @@ package mx.com.gm.web;
 
 import java.util.List;
 import mx.com.gm.domain.Chat;
-import mx.com.gm.domain.Mensaje;
 import mx.com.gm.dto.ChatRequest;
 import mx.com.gm.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;

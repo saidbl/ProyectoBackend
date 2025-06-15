@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class RecursoDTO {
     private Long id;
-    private String tipo; // VIDEO, IMAGEN, PDF
+    private String tipo; 
     private String url;
     private String descripcion;
 }

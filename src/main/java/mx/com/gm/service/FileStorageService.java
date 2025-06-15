@@ -27,8 +27,6 @@ public class FileStorageService {
 
     public String guardarArchivo(InputStream inputStream, String subdirectorio, String nombreArchivo) throws IOException {
         Path destino = this.rootLocation.resolve(subdirectorio).resolve(nombreArchivo).normalize();
-        
-        // Asegurar que el path está dentro del directorio raíz
         if (!destino.getParent().startsWith(this.rootLocation)) {
             throw new IOException("No se puede almacenar el archivo fuera del directorio raíz");
         }

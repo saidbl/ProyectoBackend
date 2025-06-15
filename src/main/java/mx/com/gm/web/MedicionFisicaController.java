@@ -6,11 +6,12 @@ import java.util.Optional;
 import mx.com.gm.domain.MedicionFisica;
 import mx.com.gm.dto.EvolucionFisicaDTO;
 import mx.com.gm.dto.MedicionFisicaDTO;
-import mx.com.gm.dto.ObjetivoRendimientoDTO;
+import mx.com.gm.dto.ResponseAPI;
 import mx.com.gm.service.MedicionFisicaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,6 +33,21 @@ public class MedicionFisicaController {
     public ResponseEntity<MedicionFisica>add(@RequestBody MedicionFisicaDTO mfdto){
         MedicionFisica r = mfservice.add(mfdto);
         return ResponseEntity.ok(r);
+    }
+    @DeleteMapping("/deleteMedicion/{id}")
+    public ResponseEntity<ResponseAPI>delete(@PathVariable Long id){
+        try{
+            mfservice.delete(id);
+            ResponseAPI r = new ResponseAPI();
+            r.setMessage("Eliminado correctamente");
+            r.setSuccess(true);
+            return ResponseEntity.ok(r);
+        }catch(Exception e){
+            ResponseAPI errorResponse = new ResponseAPI();
+        errorResponse.setMessage("Error al eliminar medicion");
+        errorResponse.setSuccess(false);
+        return ResponseEntity.internalServerError().body(errorResponse);
+        }
     }
     
     @GetMapping("/ultimaMedicion/{idDeportista}")

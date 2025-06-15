@@ -1,17 +1,13 @@
 package mx.com.gm.web;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import mx.com.gm.domain.Chat;
+import mx.com.gm.domain.Equipo;
 import mx.com.gm.domain.Mensaje;
 import mx.com.gm.domain.MensajeRequest;
 import mx.com.gm.domain.RemitenteTipo;
 import mx.com.gm.dto.MensajeDTO;
 import mx.com.gm.service.ChatService;
+import mx.com.gm.service.EquipoService;
 import mx.com.gm.service.MensajeService;
 import mx.com.gm.service.ParticipanteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +29,9 @@ public class ChatWebSocketController {
     @Autowired
     private ParticipanteService pservice;
     
+    @Autowired
+    private EquipoService eservice;
+    
     @MessageMapping("/chat/{chatId}/send")
     public void handleMessage(@Payload MensajeRequest request, 
                             @DestinationVariable Long chatId) {
@@ -53,7 +52,7 @@ public class ChatWebSocketController {
     );
     
     messagingTemplate.convertAndSend("/topic/chat/" + mensajeDTO.getIdChat(), mensajeDTO);
-    Map<Long, String>  participantes = pservice.obtenerParticipantesConRol(chat);
+    Map<Long, String>  participantes = pservice.obtenerParticipantesConRol(chat,dto);
     String remitenteRol = mensajeDTO.getRemitenteTipo().getNombre().toLowerCase();
     Long remitenteId = mensajeDTO.getRemitenteId();
     for (Map.Entry<Long, String> entry : participantes.entrySet()) {
@@ -63,11 +62,23 @@ public class ChatWebSocketController {
         boolean mismoId = participanteId.equals(remitenteId);
         boolean mismoRol = rol.equals(remitenteRol);
 
-        if (!mismoId || (mismoId && !mismoRol)) {
-            messagingTemplate.convertAndSend("/topic/notificaciones/" + rol + "/" + participanteId, dto);
+        if (!(mismoId && mismoRol)) {
+            String destino = "/topic/notificaciones/" + rol + "/" + participanteId;
+System.out.println("🔔 Enviando a destino: " + destino);
+messagingTemplate.convertAndSend(destino, dto);
             System.out.println("Enviando notificación a usuario: " + participanteId + " (" + rol + ") -> " + dto);
         }
     }
+            if(chat.getEquipo()!=null){
+            if(mensajeDTO.getRemitenteTipo()==RemitenteTipo.DEPORTISTA){
+                Equipo e = eservice.listById(chat.getEquipo().getId());
+                if(mensajeDTO.getRemitenteId().equals(e.getInstructor().getId())){
+                    String destino = "/topic/notificaciones/" + e.getInstructor().getRol() + "/" + e.getInstructor().getId();
+System.out.println("🔔 Enviando a destino: " + destino);
+messagingTemplate.convertAndSend(destino, dto);
+                }
+            }
+        }
     }
     public MensajeDTO convertirADTO(Mensaje mensaje){
         MensajeDTO dto = new MensajeDTO();

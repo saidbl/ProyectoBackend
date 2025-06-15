@@ -73,6 +73,5 @@ public void marcarMensajesComoLeidos(Long chatId, Long usuarioId) {
             mensaje.isLeido()
         );
     }
-
    
 }

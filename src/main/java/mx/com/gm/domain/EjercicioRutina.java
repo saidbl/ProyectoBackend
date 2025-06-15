@@ -1,6 +1,5 @@
 package mx.com.gm.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.io.Serializable;
 

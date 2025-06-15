@@ -2,9 +2,7 @@
 package mx.com.gm.service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import mx.com.gm.dao.ChatDao;
 import mx.com.gm.dao.DeportistaDao;
 import mx.com.gm.dao.EquipoDao;

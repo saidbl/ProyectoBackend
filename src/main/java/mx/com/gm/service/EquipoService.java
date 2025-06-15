@@ -12,4 +12,5 @@ public interface EquipoService {
     public Equipo add(EquipoDTO e,MultipartFile archivo)throws IOException;
     public List<Equipo> listbyidjugador(Long id);
     public Equipo updateEquipo(EquipoDTO equipoDTO, MultipartFile imagen) throws IOException;
+    public Equipo listById(Long id);
 }

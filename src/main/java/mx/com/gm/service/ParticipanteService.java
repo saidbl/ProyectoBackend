@@ -1,14 +1,15 @@
 
 package mx.com.gm.service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mx.com.gm.dao.ChatParticipanteDao;
+import mx.com.gm.dao.EquipoDao;
 import mx.com.gm.domain.Chat;
-import mx.com.gm.domain.ChatParticipante;
+import mx.com.gm.domain.Deportista;
 import mx.com.gm.domain.RemitenteTipo;
+import mx.com.gm.dto.MensajeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Service;
 public class ParticipanteService {
     @Autowired
     private ChatParticipanteDao chatParticipanteRepository;
+    @Autowired
+    private EquipoDao edao;
 
 
     public void validarRemitenteEnChat(Chat chat, Long remitenteId, RemitenteTipo tipo) {
@@ -54,29 +57,44 @@ public class ParticipanteService {
         return (tipo == RemitenteTipo.ORGANIZACION && remitenteId.equals(chat.getOrganizacion().getId()))
                 || (tipo == RemitenteTipo.INSTRUCTOR && remitenteId.equals(chat.getInstructor().getId()));
     }
-  public Map<Long, String> obtenerParticipantesConRol(Chat chat) {
+  public Map<Long, String> obtenerParticipantesConRol(Chat chat,MensajeDTO dto) {
     Map<Long, String> participantes = new HashMap<>();
       System.out.println(chat);
       System.out.println(chat.getDeportista());
     if (chat.getDeportista() != null) {
+        if(dto.getRemitenteTipo()!= RemitenteTipo.DEPORTISTA){
+        System.out.println("Entra al if");
+        System.out.println(chat.getDeportista());
         participantes.put(chat.getDeportista().getId(), "deportista");
+        System.out.println(participantes);
+        }
     }
     if (chat.getInstructor() != null) {
+        if(dto.getRemitenteTipo()!=RemitenteTipo.INSTRUCTOR){
         participantes.put(chat.getInstructor().getId(), "instructor");
+        }
     }
     if(chat.getOrganizacion()!=null){
         participantes.put(chat.getInstructor().getId(), "organizacion");
     }
 
-    if (chat.getParticipantes() != null) {
-        for (ChatParticipante cp : chat.getParticipantes()) {
-            if (cp.getDeportista() != null) {
-                participantes.put(cp.getDeportista().getId(), "deportista");
-            }
-            if(cp.getChat().getInstructor()!= null){
-                participantes.put(cp.getChat().getInstructor().getId(),"instructor");
-            }
+    if(chat.getEquipo()!=null) {
+    List<Deportista> deportistas = edao.findJugadoresByEquipoId(chat.getEquipo().getId());
+     if (chat.getDeportista() != null) {
+      System.out.println(deportistas);
+        for (Deportista d : deportistas) {
+        if(!(d.equals(chat.getDeportista()))){
+            participantes.put(chat.getDeportista().getId(), "deportista");
         }
+        }
+      System.out.println(participantes);
+     }else{
+         System.out.println(deportistas);
+        for (Deportista d : deportistas) {
+            participantes.put(d.getId(), "deportista");
+        }
+      System.out.println(participantes);
+     }
     }
 
     return participantes;

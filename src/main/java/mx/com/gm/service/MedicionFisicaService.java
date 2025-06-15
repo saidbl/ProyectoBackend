@@ -12,4 +12,5 @@ public interface MedicionFisicaService {
     public MedicionFisica add(MedicionFisicaDTO mfdto);
     List<MedicionFisica> list(Long id);
     Optional<MedicionFisica> getLastest(Long id);
+    public void delete (Long id);
 }

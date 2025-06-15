@@ -49,7 +49,7 @@ public class SecurityConfig {
                         .requestMatchers("/deportistas/**").hasAnyAuthority("instructor")
                         .requestMatchers("/rutinaJugador/**").hasAnyAuthority("instructor")
                         .requestMatchers("/equipos/**").hasAnyAuthority("instructor","organizacion","deportista")
-                        .requestMatchers("/eventosEquipo/**").hasAnyAuthority("instructor")
+                        .requestMatchers("/eventosEquipo/**").hasAnyAuthority("instructor","deportista")
                         .requestMatchers("/api/**").hasAnyAuthority("instructor")
                         .requestMatchers("/ejercicios/**").hasAnyAuthority("instructor")
                         .requestMatchers("/video/**").permitAll()

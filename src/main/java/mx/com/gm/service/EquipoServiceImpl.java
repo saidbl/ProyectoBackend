@@ -100,5 +100,11 @@ public class EquipoServiceImpl implements EquipoService{
         
         return edao.save(equipo);
     }
+
+    @Override
+    public Equipo listById(Long id) {
+        return edao.findById(id)
+           .orElseThrow(() -> new RuntimeException("Instructor no encontrado"));
+    }
     
 }

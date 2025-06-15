@@ -78,7 +78,6 @@ public class ObjetivoRendimientoServiceImpl implements ObjetivoRendimientoServic
                 dto.setValorActual(valorActual);
                 double porcentaje = (valorActual / objetivo.getValorObjetivo()) * 100;
                 dto.setPorcentajeCompletado((int) Math.min(100, Math.round(porcentaje)));
-                dto.setCompletado(porcentaje >= 100);
             } else {
                 dto.setValorActual(0.0);
                 dto.setPorcentajeCompletado(0);

@@ -90,4 +90,9 @@ public class MedicionFisicaServiceImpl implements MedicionFisicaService{
 public Optional<MedicionFisica> getLastest(Long id) {
     return mfdao.findFirstByDeportistaIdOrderByFechaDesc(id);
 }
+
+    @Override
+    public void delete(Long id) {
+        mfdao.deleteById(id);
+    }
     }

@@ -17,6 +17,6 @@ public class Posicion implements Serializable{
     private String nombre;
     
     @ManyToOne
-    @JoinColumn(name = "id_deporte", referencedColumnName = "id") // Hace referencia a la columna en la BD
+    @JoinColumn(name = "id_deporte", referencedColumnName = "id") 
     private Deporte deporte;
 }

@@ -185,10 +185,10 @@ public class EventoServiceImpl implements EventoService{
      private String convertirDiaLocalDateATexto(DayOfWeek dayOfWeek) {
     return switch (dayOfWeek) {
         case MONDAY -> "L";
-        case TUESDAY -> "M"; // Martes
+        case TUESDAY -> "M"; 
         case WEDNESDAY -> "X";
         case THURSDAY -> "J";
-        case FRIDAY -> "V"; // Viernes
+        case FRIDAY -> "V"; 
         case SATURDAY -> "S";
         case SUNDAY -> "D";
     };

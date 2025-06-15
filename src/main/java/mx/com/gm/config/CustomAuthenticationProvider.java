@@ -31,14 +31,10 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
-
         UserDetails user = null;
-
-        // Intentamos autenticar primero como Deportista
         try {
             user = deportistaDetailsServ.loadUserByUsername(username);
         } catch (Exception e) {
-            // Si no existe como Deportista, intentamos como Organización
             try {
                 user = organizacionDetailsServ.loadUserByUsername(username);
             } catch (Exception ex) {
