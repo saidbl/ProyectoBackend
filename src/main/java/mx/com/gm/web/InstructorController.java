@@ -9,6 +9,7 @@ import mx.com.gm.service.InstructorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -59,16 +60,30 @@ public class InstructorController {
     }
     
      @PostMapping("/instructorOrg/agregar")
-    public ResponseEntity<Instructor> createInstructor(
+    public ResponseEntity<?> createInstructor(
             @RequestPart("instructor") InstructorDTO instructorDTO,
             @RequestPart(value = "foto", required = false) MultipartFile file) {
          try {
         Instructor added= iservice.add(instructorDTO, file);
         return ResponseEntity.ok(added);
-        }catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(null);
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error en los datos: " + e.getMessage());
+        }
+    }
+    @DeleteMapping("/instructorOrg/eliminar/{id}")
+    public ResponseEntity<ResponseAPI> eliminarEquipo(@PathVariable Long id) {
+        try{
+        iservice.delete(id);
+        ResponseAPI response = new ResponseAPI();
+        response.setMessage("Eliminado correctamente");
+        response.setSuccess(true);
+        return ResponseEntity.ok(response);
+         } catch (Exception e) {
+        ResponseAPI errorResponse = new ResponseAPI();
+        errorResponse.setMessage("Error al eliminar el equipo");
+        errorResponse.setSuccess(false);
+        return ResponseEntity.internalServerError().body(errorResponse);
         }
     }
 }

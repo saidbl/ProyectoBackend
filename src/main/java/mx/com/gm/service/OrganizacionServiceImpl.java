@@ -2,17 +2,21 @@
 package mx.com.gm.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 import mx.com.gm.dao.OrganizacionDao;
 import mx.com.gm.domain.Organizacion;
 import mx.com.gm.dto.OrganizacionDTO;
 import mx.com.gm.dto.ResponseAPI;
+import mx.com.gm.dto.TipoRecurso;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class OrganizacionServiceImpl implements OrganizacionService{
@@ -29,6 +33,8 @@ public class OrganizacionServiceImpl implements OrganizacionService{
     @Autowired
     private PasswordEncoder pe;
     
+    @Autowired
+    private FileStorageService fsservice;
     @Override
     public List<Organizacion> list() {
         return odao.findAll();
@@ -69,16 +75,27 @@ public class OrganizacionServiceImpl implements OrganizacionService{
     }
 
     @Override
-    public Organizacion update(Long id, OrganizacionDTO odto) {
-        Organizacion oExistente = odao.findById(id)
+    public Organizacion update(Long id, OrganizacionDTO odto, MultipartFile file)throws IOException {
+        Organizacion o = odao.findById(id)
             .orElseThrow(() -> new RuntimeException("Deporte no encontrada"));
-        oExistente.setDireccion(odto.getDireccion());
-        oExistente.setEmail(odto.getEmail());
-        oExistente.setNombre(odto.getNombre());
-        oExistente.setNombreOrganizacion(odto.getNombreOrganizacion());
-        oExistente.setTelefono(odto.getTelefono());
-        oExistente.setTipo(odto.getTipo());
-        return odao.save(oExistente);
+        if (file != null && !file.isEmpty()) {
+            TipoRecurso tipo = TipoRecurso.fromContentType(file.getContentType());
+            String nombreArchivo = UUID.randomUUID() + "_" + file.getOriginalFilename();
+            String rutaArchivo = fsservice.guardarArchivo(
+            file.getInputStream(), 
+            tipo.getNombreCarpeta(), 
+            nombreArchivo
+        );
+            fsservice.eliminarArchivo(o.getImagen());
+            o.setImagen(rutaArchivo);
+        }
+        o.setDireccion(odto.getDireccion());
+        o.setEmail(odto.getEmail());
+        o.setNombre(odto.getNombre());
+        o.setNombreOrganizacion(odto.getNombreOrganizacion());
+        o.setTelefono(odto.getTelefono());
+        o.setTipo(odto.getTipo());
+        return odao.save(o);
     }
 
     @Override

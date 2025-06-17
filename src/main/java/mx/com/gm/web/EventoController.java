@@ -59,11 +59,17 @@ public class EventoController {
         }
     }
      @PutMapping("/actualizarEvento/{id}")
-    public ResponseEntity<Evento> actualizarEvento(@PathVariable Long id, @RequestPart("evento") EventoDTO eventoDTO) {
-        System.out.println(eventoDTO);
-        Evento eventoActualizado = eservice.actualizarEvento(id, eventoDTO);
-         System.out.println(eventoDTO);
-        return ResponseEntity.ok(eventoActualizado);
+    public ResponseEntity<?> updateInstructor(
+            @PathVariable Long id,
+            @RequestPart("evento") EventoDTO organizacionDTO,
+            @RequestPart(value = "foto", required = false) MultipartFile file) {
+         try {
+        Evento updated= eservice.actualizarEvento(id, organizacionDTO, file);
+        return ResponseEntity.ok(updated);
+                }catch (Exception e) {
+                    e.printStackTrace();
+            return ResponseEntity.internalServerError().body("Error al actualizar el organizacion");
+        }
     }
     @DeleteMapping("/eliminarEvento/{id}")
     public ResponseEntity<ResponseAPI> deleteEvento(@PathVariable Long id){

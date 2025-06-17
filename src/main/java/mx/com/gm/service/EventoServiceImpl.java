@@ -206,9 +206,20 @@ public class EventoServiceImpl implements EventoService{
 
     @Transactional
     @Override
-    public Evento actualizarEvento(Long id, EventoDTO eventoActualizado) {
+    public Evento actualizarEvento(Long id, EventoDTO eventoActualizado,MultipartFile file)throws IOException {
          Evento eventoExistente = edao.findById(id)
             .orElseThrow(() -> new RuntimeException("Deporte no encontrada"));
+         if (file != null && !file.isEmpty()) {
+            TipoRecurso tipo = TipoRecurso.fromContentType(file.getContentType());
+            String nombreArchivo = UUID.randomUUID() + "_" + file.getOriginalFilename();
+            String rutaArchivo = fsservice.guardarArchivo(
+            file.getInputStream(), 
+            tipo.getNombreCarpeta(), 
+            nombreArchivo
+        );
+            fsservice.eliminarArchivo(eventoExistente.getImagen());
+            eventoExistente.setImagen(rutaArchivo);
+        }
         eventoExistente.setNombre(eventoActualizado.getNombre());
         eventoExistente.setFecha(eventoActualizado.getFecha());
         eventoExistente.setFechaFin(eventoActualizado.getFechaFin());

@@ -75,7 +75,9 @@ public class ParticipanteService {
         }
     }
     if(chat.getOrganizacion()!=null){
+        if(dto.getRemitenteTipo()!=RemitenteTipo.ORGANIZACION){
         participantes.put(chat.getInstructor().getId(), "organizacion");
+        }
     }
 
     if(chat.getEquipo()!=null) {

@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.UUID;
 import mx.com.gm.dao.DeporteDao;
 import mx.com.gm.dao.EquipoDao;
+import mx.com.gm.dao.EventoDao;
 import mx.com.gm.dao.InstructorDao;
 import mx.com.gm.domain.Deporte;
 import mx.com.gm.domain.Equipo;
+import mx.com.gm.domain.Evento;
 import mx.com.gm.domain.Instructor;
 import mx.com.gm.dto.EquipoDTO;
 import mx.com.gm.dto.TipoRecurso;
@@ -30,6 +32,12 @@ public class EquipoServiceImpl implements EquipoService{
     @Autowired 
     FileStorageService fsservice;
     
+    @Autowired
+    private EventoEquipoService eeservice;
+    
+    @Autowired
+    private EventoDao evdao;
+    
     @Override
     public List<Equipo> listByIdInstructor(Long id) {
         return edao.findByInstructorId(id);
@@ -39,6 +47,14 @@ public class EquipoServiceImpl implements EquipoService{
     public void delete(Long id) throws IOException{
         Equipo equipo = edao.findById(id)
             .orElseThrow(() -> new RuntimeException("Instructor no encontrado"));
+        List<Evento> eventos = eeservice.listarEventosEquipo(equipo.getId());
+        for(Evento evento : eventos){
+        Long equiposInscritos = evento.getEquiposInscritos();
+        equiposInscritos --;
+        evento.setEquiposInscritos(equiposInscritos);
+        evdao.save(evento);
+        
+        }
         fsservice.eliminarArchivo(equipo.getImg());
         edao.deleteById(id);
     }

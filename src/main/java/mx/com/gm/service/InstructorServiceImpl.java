@@ -125,6 +125,9 @@ public class InstructorServiceImpl implements InstructorService{
 
     @Override
     public Instructor add(InstructorDTO idto, MultipartFile file) throws IOException {
+        if (idao.existsByEmail(idto.getEmail())) {
+            throw new IllegalArgumentException("El email ya está registrado");
+        }
         TipoRecurso tipo = TipoRecurso.fromContentType(file.getContentType());
         if (tipo == null) {
             throw new IllegalArgumentException("Tipo de archivo no soportado: " + file.getContentType());
@@ -151,6 +154,14 @@ public class InstructorServiceImpl implements InstructorService{
        i.setTelefono(idto.getTelefono());
        Instructor ins = idao.save(i);
        return ins;
+    }
+
+    @Override
+    public void delete(Long id)throws IOException {
+        Instructor i= idao.findById(id)
+            .orElseThrow(() -> new RuntimeException("Instructor no encontrado"));
+       fsservice.eliminarArchivo(i.getFotoPerfil());
+       idao.deleteById(id);
     }
     
 }

@@ -10,4 +10,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface InstructorDao extends JpaRepository<Instructor,Long>{
     Optional<Instructor> findByEmail(String email);
     List<Instructor>findByDeporteId(Long id);
+    boolean existsByEmail(String email);
 }

@@ -15,7 +15,7 @@ public interface EventoService {
     public Evento crearEventoconFechas(EventoDTO edto,MultipartFile archivo) throws IOException ;
     public List<Evento> ProximosEventosByOrganizacionId(Long org);
     public void eliminarEvento(Long id);
-    public Evento actualizarEvento(Long id, EventoDTO eventoActualizado);
+    public Evento actualizarEvento(Long id, EventoDTO eventoActualizado,MultipartFile file)throws IOException;
     public List<EventoConEquiposDTO> getProximosEventosConEquipos(Long org);
     public Map<String,Object>getEstadisticasGenerales(Long org);
 }

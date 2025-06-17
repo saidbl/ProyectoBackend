@@ -3,6 +3,7 @@ package mx.com.gm.web;
 
 import java.util.List;
 import mx.com.gm.domain.Organizacion;
+import mx.com.gm.dto.InstructorDTO;
 import mx.com.gm.dto.OrganizacionDTO;
 import mx.com.gm.dto.ResponseAPI;
 import mx.com.gm.service.OrganizacionService;
@@ -13,7 +14,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 public class OrganizacionController {
@@ -32,9 +35,17 @@ public class OrganizacionController {
         return ResponseEntity.ok(oservice.login(req));
     }
      @PutMapping("/actualizarOrg/{id}")
-    public ResponseEntity<Organizacion> actualizarOrg(@PathVariable Long id, @RequestBody OrganizacionDTO oDTO) {
-        Organizacion orgActualizado = oservice.update(id, oDTO);
-        return ResponseEntity.ok(orgActualizado);
+    public ResponseEntity<?> updateInstructor(
+            @PathVariable Long id,
+            @RequestPart("organizacion") OrganizacionDTO organizacionDTO,
+            @RequestPart(value = "foto", required = false) MultipartFile file) {
+         try {
+        Organizacion updated= oservice.update(id, organizacionDTO, file);
+        return ResponseEntity.ok(updated);
+                }catch (Exception e) {
+                    e.printStackTrace();
+            return ResponseEntity.internalServerError().body("Error al actualizar el organizacion");
+        }
     }
     @GetMapping("/listarOrganizacion/{id}")
     public List<Organizacion> listByDeporte(@PathVariable Long id){
