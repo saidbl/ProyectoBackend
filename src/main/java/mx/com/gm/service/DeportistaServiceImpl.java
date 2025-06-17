@@ -4,12 +4,14 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
+import mx.com.gm.dao.AdminDao;
 import mx.com.gm.dao.CheckinRutinaDao;
 import mx.com.gm.dao.DeporteDao;
 import mx.com.gm.dao.DeportistaDao;
 import mx.com.gm.dao.InstructorDao;
 import mx.com.gm.dao.MedicionFisicaDao;
 import mx.com.gm.dao.ObjetivoRendimientoDao;
+import mx.com.gm.dao.OrganizacionDao;
 import mx.com.gm.dao.PosicionDao;
 import mx.com.gm.dao.RegistroRendimientoDao;
 import mx.com.gm.domain.Deporte;
@@ -46,6 +48,8 @@ public class DeportistaServiceImpl implements DeportistaService{
     @Autowired 
     RegistroRendimientoDao rrdao;
     @Autowired
+    OrganizacionDao odao;
+    @Autowired
     ObjetivoRendimientoDao ordao;
     @Autowired
     CheckinRutinaDao chrdao;
@@ -57,6 +61,8 @@ public class DeportistaServiceImpl implements DeportistaService{
     FileStorageService fsservice;
     @Autowired
     PosicionDao pdao;
+    @Autowired
+    AdminDao adao;
 
     @Autowired
     private AuthenticationManager am;
@@ -231,7 +237,16 @@ public class DeportistaServiceImpl implements DeportistaService{
 
     @Override
     public Deportista add(DeportistaMedicionDTO dto)throws IOException {
+        if (idao.existsByEmail(dto.getEmail())) {
+            throw new IllegalArgumentException("El email ya está registrado");
+        }
+        if (odao.existsByEmail(dto.getEmail())) {
+            throw new IllegalArgumentException("El email ya está registrado");
+        }
         if (ddao.existsByEmail(dto.getEmail())) {
+            throw new IllegalArgumentException("El email ya está registrado");
+        }
+        if (adao.existsByEmail(dto.getEmail())) {
             throw new IllegalArgumentException("El email ya está registrado");
         }
         TipoRecurso tipo = TipoRecurso.fromContentType(dto.getFotoPerfil().getContentType());

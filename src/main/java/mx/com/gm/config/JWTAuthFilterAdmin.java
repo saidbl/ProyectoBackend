@@ -1,3 +1,4 @@
+
 package mx.com.gm.config;
 
 import jakarta.servlet.FilterChain;
@@ -20,8 +21,8 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @Configuration
-public class JWTAuthFilterInst extends OncePerRequestFilter{
-    @Autowired
+public class JWTAuthFilterAdmin extends OncePerRequestFilter{
+        @Autowired
     private JWTUtils jwt;
 
     @Autowired
@@ -78,5 +79,4 @@ public class JWTAuthFilterInst extends OncePerRequestFilter{
         }
         filterChain.doFilter(request, response);
     }
-    }
-    
+}

@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import mx.com.gm.service.AdminDetailsServ;
 import mx.com.gm.service.DeportistaDetailsServ;
 import mx.com.gm.service.InstructorDetailsServ;
 import mx.com.gm.service.JWTUtils;
@@ -30,6 +31,8 @@ public class JWTAuthFilterOrg extends OncePerRequestFilter{
     private InstructorDetailsServ ids;
     @Autowired
     private OrganizacionDetailsServ ods;
+    @Autowired
+    private AdminDetailsServ ads;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -54,7 +57,11 @@ public class JWTAuthFilterOrg extends OncePerRequestFilter{
                     try{
                     user= ods.loadUserByUsername(email);
                     }catch(Exception exe){
-                        throw new RuntimeException("Usuario no encontrado en ninguna categoría");
+                        try{
+                            user= ads.loadUserByUsername(email);
+                            }catch(Exception exee){
+                                throw new RuntimeException("Usuario no encontrado en ninguna categoría");
+                            }
                     }
                 }
                 

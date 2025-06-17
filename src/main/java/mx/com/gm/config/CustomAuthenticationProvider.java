@@ -1,5 +1,6 @@
 package mx.com.gm.config;
 
+import mx.com.gm.service.AdminDetailsServ;
 import mx.com.gm.service.DeportistaDetailsServ;
 import mx.com.gm.service.InstructorDetailsServ;
 import mx.com.gm.service.OrganizacionDetailsServ;
@@ -15,15 +16,18 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     private final DeportistaDetailsServ deportistaDetailsServ;
     private final OrganizacionDetailsServ organizacionDetailsServ;
     private final InstructorDetailsServ instructorDetailsServ;
+    private final AdminDetailsServ adminDetailsServ;
     private final PasswordEncoder passwordEncoder;
 
     public CustomAuthenticationProvider(DeportistaDetailsServ deportistaDetailsServ,
                                         OrganizacionDetailsServ organizacionDetailsServ,
                                         InstructorDetailsServ instructorDetailsServ,
+                                        AdminDetailsServ adminDetailsServ,
                                         PasswordEncoder passwordEncoder) {
         this.deportistaDetailsServ = deportistaDetailsServ;
         this.organizacionDetailsServ = organizacionDetailsServ;
         this.instructorDetailsServ = instructorDetailsServ;
+        this.adminDetailsServ = adminDetailsServ;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -41,7 +45,11 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                 try {
                     user = instructorDetailsServ.loadUserByUsername(username);
                 } catch (Exception exe){
-                    throw new RuntimeException("Usuario no encontrado en ninguna categoría");
+                    try {
+                        user = adminDetailsServ.loadUserByUsername(username);
+                    } catch (Exception exee){
+                        throw new RuntimeException("Usuario no encontrado en ninguna categoría");
+                    }
                 }
             }
         }

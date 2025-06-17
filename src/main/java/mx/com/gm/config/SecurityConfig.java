@@ -1,5 +1,6 @@
 package mx.com.gm.config;
 
+import mx.com.gm.service.AdminDetailsServ;
 import mx.com.gm.service.DeportistaDetailsServ;
 import mx.com.gm.service.InstructorDetailsServ;
 import mx.com.gm.service.OrganizacionDetailsServ;
@@ -30,6 +31,9 @@ public class SecurityConfig {
     
     @Autowired
     private JWTAuthFilterInst jwtInstructor;
+    
+    @Autowired
+    private JWTAuthFilterAdmin jwtAdmin;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, 
@@ -88,13 +92,17 @@ public class SecurityConfig {
                         .requestMatchers("/usuario/**").permitAll()
                         .requestMatchers("/mensajes/**").permitAll()
                         .requestMatchers("/instructorOrg/**").hasAnyAuthority("organizacion")
+                        .requestMatchers("/deportes/**").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/org/**").hasAnyAuthority("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(customAuthenticationProvider) 
                 .addFilterBefore(jwtOrganizacion, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtDeportista, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtInstructor, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtInstructor, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAdmin, UsernamePasswordAuthenticationFilter.class);
+                
 
         return httpSecurity.build();
     }
@@ -111,7 +119,8 @@ public class SecurityConfig {
     public CustomAuthenticationProvider customAuthenticationProvider(DeportistaDetailsServ deportistaDetailsServ,
                                                                      OrganizacionDetailsServ organizacionDetailsServ,
                                                                      InstructorDetailsServ instructorDetailsServ,
+                                                                     AdminDetailsServ adminDetailsServ,
                                                                      PasswordEncoder passwordEncoder) {
-        return new CustomAuthenticationProvider(deportistaDetailsServ, organizacionDetailsServ,instructorDetailsServ,passwordEncoder);
+        return new CustomAuthenticationProvider(deportistaDetailsServ, organizacionDetailsServ,instructorDetailsServ,adminDetailsServ,passwordEncoder);
     }
 }

@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import mx.com.gm.dao.AdminDao;
 import mx.com.gm.dao.DeporteDao;
 import mx.com.gm.dao.DeportistaDao;
 import mx.com.gm.dao.InstructorDao;
+import mx.com.gm.dao.OrganizacionDao;
 import mx.com.gm.domain.Deporte;
 import mx.com.gm.domain.Deportista;
 import mx.com.gm.domain.Instructor;
@@ -32,6 +34,10 @@ public class InstructorServiceImpl implements InstructorService{
     @Autowired
     private DeporteDao ddao;
     
+    
+    @Autowired
+    private OrganizacionDao odao;
+    
     @Autowired 
     private FileStorageService fsservice;
     
@@ -40,6 +46,9 @@ public class InstructorServiceImpl implements InstructorService{
     
     @Autowired
     private JWTUtils jwt;
+    
+    @Autowired
+    private AdminDao adao;
     
     @Autowired
     private PasswordEncoder pe;
@@ -126,6 +135,15 @@ public class InstructorServiceImpl implements InstructorService{
     @Override
     public Instructor add(InstructorDTO idto, MultipartFile file) throws IOException {
         if (idao.existsByEmail(idto.getEmail())) {
+            throw new IllegalArgumentException("El email ya está registrado");
+        }
+        if (odao.existsByEmail(idto.getEmail())) {
+            throw new IllegalArgumentException("El email ya está registrado");
+        }
+        if (depdao.existsByEmail(idto.getEmail())) {
+            throw new IllegalArgumentException("El email ya está registrado");
+        }
+        if (adao.existsByEmail(idto.getEmail())) {
             throw new IllegalArgumentException("El email ya está registrado");
         }
         TipoRecurso tipo = TipoRecurso.fromContentType(file.getContentType());

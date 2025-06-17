@@ -1,6 +1,8 @@
 package mx.com.gm.service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
+import mx.com.gm.dao.DeporteDao;
 import mx.com.gm.dao.DeportistaDao;
 import mx.com.gm.dao.EquipoDao;
 import mx.com.gm.dao.InstructorDao;
@@ -16,14 +18,21 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class DeporteServiceImpl {
-    @Autowired 
-    DeportistaDao ddao;
+    @Autowired
+    DeporteDao ddao;
+    @Autowired
+    DeportistaDao depdao;
     @Autowired
     InstructorDao idao;
     @Autowired
     OrganizacionDao odao;
     @Autowired
     EquipoDao edao;
+    
+    public List<Deporte> list(){
+        return ddao.findAll();
+    }
+    
     public Deporte obtenerDeporteComun(ChatRequest request) {
         return switch (request.getTipo()) {
             case INSTRUCTOR_DEPORTISTA -> validarDeporteInstructorDeportista(
@@ -56,7 +65,7 @@ public class DeporteServiceImpl {
         Instructor instructor = idao.findById(instructorId)
             .orElseThrow(() -> new NoSuchElementException("Instructor no encontrado"));
         
-        Deportista deportista = ddao.findById(deportistaId)
+        Deportista deportista = depdao.findById(deportistaId)
             .orElseThrow(() -> new NoSuchElementException("Instructor no encontrado"));
 
         if (!instructor.getDeporte().getId().equals(deportista.getDeporte().getId())) {

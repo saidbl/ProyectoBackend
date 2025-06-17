@@ -8,4 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface OrganizacionDao extends JpaRepository<Organizacion,Long>{
        Optional<Organizacion> findByEmail(String email);
        List<Organizacion> findByDeporteId(Long id);
+       boolean existsByEmail(String email);
 }
