@@ -59,12 +59,13 @@ public class EventoController {
         }
     }
      @PutMapping("/actualizarEvento/{id}")
-    public ResponseEntity<?> updateInstructor(
+    public ResponseEntity<?> updateEvento(
             @PathVariable Long id,
-            @RequestPart("evento") EventoDTO organizacionDTO,
+            @RequestPart("evento") EventoDTO eventoDTO,
             @RequestPart(value = "foto", required = false) MultipartFile file) {
          try {
-        Evento updated= eservice.actualizarEvento(id, organizacionDTO, file);
+        Evento updated= eservice.actualizarEvento(id, eventoDTO, file);
+             System.out.println(eventoDTO);
         return ResponseEntity.ok(updated);
                 }catch (Exception e) {
                     e.printStackTrace();

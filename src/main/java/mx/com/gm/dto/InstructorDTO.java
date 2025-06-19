@@ -15,5 +15,6 @@ public class InstructorDTO {
     private int experiencia;
     private String rol = "instructor";
     private Long idDeporte;
+    private Long idOrganizacion;
     private String fotoPerfil;
 }

@@ -45,10 +45,11 @@ List<Long> findEquipoIdsByDeportistaId(@Param("deportistaId") Long deportistaId)
     @Query("SELECT c FROM Chat c WHERE " +
        "(c.instructor.id = :instructorId AND c.deportista.id = :deportistaId AND c.tipo = :tipo) " +
        "OR (c.equipo.id = :equipoId AND c.tipo = :tipo)"+
-        "OR (c.organizacion.id = :organizacionId AND c.tipo = :tipo)")
+        "OR (c.organizacion.id = :organizacionId AND c.tipo = :tipo  AND c.instructor.id = :instructorId )")
 Chat findChatByUniqueKeys(@Param("instructorId") Long instructorId,
                           @Param("deportistaId") Long deportistaId,
                           @Param("equipoId") Long equipoId,
                           @Param("organizacionId")Long organizacionId,
-                          @Param("tipo") ChatTipo tipo);
+                          @Param("tipo") ChatTipo tipo,
+                          @Param("deporteId")Long deporteId);
 }

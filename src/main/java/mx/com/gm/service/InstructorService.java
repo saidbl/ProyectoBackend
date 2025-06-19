@@ -14,7 +14,7 @@ public interface InstructorService {
     public Instructor getById(Long id);
     public Instructor update(Long id, InstructorDTO idto, MultipartFile file)throws IOException;
      public Instructor listByIdDeportista(Long id);
-     public List<Instructor> listByDeporte(Long id);
+     public List<Instructor> listByOrganizacion(Long id);
      public Instructor add(InstructorDTO idto, MultipartFile file)throws IOException;
      public void delete(Long id)throws IOException;
 }

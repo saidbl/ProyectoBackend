@@ -1,6 +1,5 @@
 package mx.com.gm.web;
 
-import java.io.IOException;
 import java.util.List;
 import mx.com.gm.domain.Instructor;
 import mx.com.gm.dto.InstructorDTO;
@@ -55,8 +54,8 @@ public class InstructorController {
         return ResponseEntity.ok(iservice.listByIdDeportista(id));
     }
     @GetMapping("/instructorOrg/{id}")
-    public List<Instructor> getByDeporte (@PathVariable Long id){
-        return iservice.listByDeporte(id);
+    public List<Instructor> getByOrganizacion (@PathVariable Long id){
+        return iservice.listByOrganizacion(id);
     }
     
      @PostMapping("/instructorOrg/agregar")

@@ -47,6 +47,10 @@ public class Instructor implements Serializable, UserDetails{
     
     @Column(name = "foto_perfil")
     private String fotoPerfil;
+    
+    @ManyToOne
+    @JoinColumn(name = "id_organizacion", nullable = false)
+    private Organizacion organizacion;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

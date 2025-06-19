@@ -207,8 +207,13 @@ public class EventoServiceImpl implements EventoService{
     @Transactional
     @Override
     public Evento actualizarEvento(Long id, EventoDTO eventoActualizado,MultipartFile file)throws IOException {
+        
          Evento eventoExistente = edao.findById(id)
             .orElseThrow(() -> new RuntimeException("Deporte no encontrada"));
+         String nombreArchivoT = file.getOriginalFilename();
+         System.out.println(nombreArchivoT);
+         System.out.println(eventoExistente.getImagen());
+         if(!eventoExistente.getImagen().equals("image/"+nombreArchivoT)){
          if (file != null && !file.isEmpty()) {
             TipoRecurso tipo = TipoRecurso.fromContentType(file.getContentType());
             String nombreArchivo = UUID.randomUUID() + "_" + file.getOriginalFilename();
@@ -219,6 +224,7 @@ public class EventoServiceImpl implements EventoService{
         );
             fsservice.eliminarArchivo(eventoExistente.getImagen());
             eventoExistente.setImagen(rutaArchivo);
+        }
         }
         eventoExistente.setNombre(eventoActualizado.getNombre());
         eventoExistente.setFecha(eventoActualizado.getFecha());
@@ -231,7 +237,7 @@ public class EventoServiceImpl implements EventoService{
         eventoExistente.setEstado(eventoActualizado.getEstado());
         eventoExistente.setRecurrente(eventoActualizado.getRecurrente());
         eventoExistente.setFrecuencia(eventoActualizado.getFrecuencia());
-        if (eventoActualizado.getFrecuencia().equals("MENSUAL")||eventoActualizado.getFrecuencia().equals("ANUAL")){
+        if (eventoActualizado.getFrecuencia().equals("MENSUAL")||eventoActualizado.getFrecuencia().equals("ANUAL")|| !eventoActualizado.getRecurrente()){
             eventoExistente.setDiasSemana(null);
         }   else{
             eventoExistente.setDiasSemana(eventoActualizado.getDiasSemana().toString());

@@ -51,7 +51,8 @@ public class ChatServiceImpl implements ChatService{
         request.getDeportistaId(),
         request.getEquipoId(),
         request.getOrganizacionId(),
-        request.getTipo()
+        request.getTipo(),
+        request.getDeporteId()
     );
     if (chatExistente != null) {
         return chatExistente;
@@ -77,8 +78,8 @@ public class ChatServiceImpl implements ChatService{
                 agregarParticipantesEquipo(chat);
             }
             case INSTRUCTOR_ORGANIZACION ->{
-                Organizacion o = odao.findById(i.getDeporte().getId())
-                        .orElseThrow(()->new RuntimeException("Rutina no encontrada"));;
+                Organizacion o = odao.findById(request.getOrganizacionId())
+                        .orElseThrow(()->new RuntimeException("Rutina no encontrada"));
                 chat.setInstructor(i);
                 chat.setOrganizacion(o);
                 

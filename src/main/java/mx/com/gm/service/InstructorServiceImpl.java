@@ -13,6 +13,7 @@ import mx.com.gm.dao.OrganizacionDao;
 import mx.com.gm.domain.Deporte;
 import mx.com.gm.domain.Deportista;
 import mx.com.gm.domain.Instructor;
+import mx.com.gm.domain.Organizacion;
 import mx.com.gm.dto.InstructorDTO;
 import mx.com.gm.dto.ResponseAPI;
 import mx.com.gm.dto.TipoRecurso;
@@ -128,12 +129,13 @@ public class InstructorServiceImpl implements InstructorService{
     }
 
     @Override
-    public List<Instructor> listByDeporte(Long id) {
-        return idao.findByDeporteId(id);
+    public List<Instructor> listByOrganizacion(Long id) {
+        return idao.findByOrganizacionId(id);
     }
 
     @Override
     public Instructor add(InstructorDTO idto, MultipartFile file) throws IOException {
+        System.out.println(idto);
         if (idao.existsByEmail(idto.getEmail())) {
             throw new IllegalArgumentException("El email ya está registrado");
         }
@@ -157,6 +159,8 @@ public class InstructorServiceImpl implements InstructorService{
             nombreArchivo
         );
        Instructor i = new Instructor();
+       Organizacion o = odao.findById(idto.getIdOrganizacion())
+               .orElseThrow(() -> new RuntimeException("Rutina no encontrada"));
        Deporte d = ddao.findById(idto.getIdDeporte())
                .orElseThrow(() -> new RuntimeException("Rutina no encontrada"));
        i.setApellido(idto.getApellido());
@@ -166,6 +170,7 @@ public class InstructorServiceImpl implements InstructorService{
        i.setExperiencia(idto.getExperiencia());
        i.setFotoPerfil(rutaArchivo);
        i.setNombre(idto.getNombre());
+       i.setOrganizacion(o);
        String hashedPassword = pe.encode(idto.getPassword());
        i.setPassword(hashedPassword);
        i.setRol(idto.getRol());
