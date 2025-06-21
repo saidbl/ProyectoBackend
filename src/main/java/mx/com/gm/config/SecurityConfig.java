@@ -94,6 +94,7 @@ public class SecurityConfig {
                         .requestMatchers("/instructorOrg/**").hasAnyAuthority("organizacion")
                         .requestMatchers("/deportes/**").hasAnyAuthority("ADMIN")
                         .requestMatchers("/org/**").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/desasociarEquipo/**").hasAnyAuthority("instructor","organizacion")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -12,4 +12,5 @@ public interface EventoEquipoService {
     public EventoEquipo add(EventoEquipoDTO ee);
     public List<Equipo> listarEquiposEvento(Long idEvento);
     public List<Evento> listarEventosEquipo(Long idEquipo);
+    public void desasociarEquipo (Long idevento,Long idequipo );
 }

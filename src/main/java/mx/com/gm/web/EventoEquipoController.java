@@ -5,9 +5,11 @@ import mx.com.gm.domain.Equipo;
 import mx.com.gm.domain.Evento;
 import mx.com.gm.domain.EventoEquipo;
 import mx.com.gm.dto.EventoEquipoDTO;
+import mx.com.gm.dto.ResponseAPI;
 import mx.com.gm.service.EventoEquipoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,5 +39,20 @@ public class EventoEquipoController {
     @GetMapping("/equiposEvento/listar/{id}")
     public List<Evento> listarEventosEquipo(@PathVariable Long id){
         return eeservice.listarEventosEquipo(id);
+    }
+    @DeleteMapping("/desasociarEquipo/{equipoId}/{eventoId}")
+    public ResponseEntity<ResponseAPI> desasociar(@PathVariable Long equipoId, @PathVariable Long eventoId){
+        try{
+            ResponseAPI r = new ResponseAPI();
+            eeservice.desasociarEquipo(eventoId, equipoId);
+            r.setSuccess(true);
+            r.setMessage("Exito al desasociar");
+            return ResponseEntity.ok(r);
+        }catch(Exception e){
+            ResponseAPI r = new ResponseAPI();
+            r.setSuccess(false);
+            r.setMessage("Error al desasociar");
+            return ResponseEntity.internalServerError().body(r);
+        }
     }
 }

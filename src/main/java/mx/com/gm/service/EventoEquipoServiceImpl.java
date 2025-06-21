@@ -56,5 +56,16 @@ public class EventoEquipoServiceImpl implements EventoEquipoService{
     public List<Evento> listarEventosEquipo(Long idEquipo) {
         return eedao.findEventosByEquipoId(idEquipo);
     }
+
+    @Override
+    public void desasociarEquipo(Long idevento, Long idequipo) {
+        Evento e = ddao.findById(idevento)
+                .orElseThrow(() -> new RuntimeException("Deportista no encontrado"));
+        Long n = e.getEquiposInscritos();
+        n--;
+        e.setEquiposInscritos(n);
+        ddao.save(e);
+        eedao.deleteByEquipoIdAndEventoId(idequipo, idevento);
+    }
     
 }
