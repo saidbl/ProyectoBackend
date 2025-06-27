@@ -71,7 +71,7 @@ public class InstructorController {
         }
     }
     @DeleteMapping("/instructorOrg/eliminar/{id}")
-    public ResponseEntity<ResponseAPI> eliminarEquipo(@PathVariable Long id) {
+    public ResponseEntity<ResponseAPI> eliminarInstructor(@PathVariable Long id) {
         try{
         iservice.delete(id);
         ResponseAPI response = new ResponseAPI();

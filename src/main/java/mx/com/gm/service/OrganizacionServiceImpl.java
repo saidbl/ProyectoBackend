@@ -162,5 +162,13 @@ public class OrganizacionServiceImpl implements OrganizacionService{
        Organizacion or = odao.save(o);
        return or;
     }
+
+    @Override
+    public void delete(Long id) throws IOException {
+        Organizacion o= odao.findById(id)
+            .orElseThrow(() -> new RuntimeException("Organizacion no encontrada"));
+       fsservice.eliminarArchivo(o.getImagen());
+       odao.deleteById(id);
+    }
     }
     

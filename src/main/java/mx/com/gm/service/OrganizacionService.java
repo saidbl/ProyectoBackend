@@ -14,4 +14,5 @@ public interface OrganizacionService {
     public Organizacion update(Long id, OrganizacionDTO odto, MultipartFile file)throws IOException;
     public List<Organizacion> listByDeporte (Long id);
      public Organizacion add(OrganizacionDTO idto, MultipartFile file)throws IOException;
+     public void delete(Long id)throws IOException;
 }

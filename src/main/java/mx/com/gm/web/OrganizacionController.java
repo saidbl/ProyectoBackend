@@ -10,6 +10,7 @@ import mx.com.gm.service.OrganizacionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,6 +41,21 @@ public class OrganizacionController {
     public List<Organizacion> list(){
         return oservice.list();
     }
+        @DeleteMapping("/organizacion/eliminar/{id}")
+    public ResponseEntity<ResponseAPI> eliminarOrganizacion(@PathVariable Long id) {
+        try{
+        oservice.delete(id);
+        ResponseAPI response = new ResponseAPI();
+        response.setMessage("Eliminado correctamente");
+        response.setSuccess(true);
+        return ResponseEntity.ok(response);
+         } catch (Exception e) {
+        ResponseAPI errorResponse = new ResponseAPI();
+        errorResponse.setMessage("Error al eliminar el organizacion");
+        errorResponse.setSuccess(false);
+        return ResponseEntity.internalServerError().body(errorResponse);
+        }
+    }
     @GetMapping("/obtenerOrg/{id}")
     public Organizacion getbyId(@PathVariable Long id) {
         return oservice.getbyId(id);
@@ -49,7 +65,7 @@ public class OrganizacionController {
         return ResponseEntity.ok(oservice.login(req));
     }
      @PutMapping("/actualizarOrg/{id}")
-    public ResponseEntity<?> updateInstructor(
+    public ResponseEntity<?> updateOrganizacion(
             @PathVariable Long id,
             @RequestPart("organizacion") OrganizacionDTO organizacionDTO,
             @RequestPart(value = "foto", required = false) MultipartFile file) {
